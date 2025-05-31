@@ -46,4 +46,4 @@ The game uses CSS variables and modern gradients. Easy to customize:
 - Create themes (change the gradients!)
 - Add sound effects
 
-Enjoy your COSMIC BINGO! 🎉
+Enjoy your COSMIC BINGO! 🎉 
