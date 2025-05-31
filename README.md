@@ -1,6 +1,10 @@
 # 🚀 COSMIC BINGO
 
+**Live at**: https://ornate-duckanoo-41fe58.netlify.app
+
 A super cool, modern bingo game with awesome visual effects!
+
+**Auto-Deploy**: ✅ Connected to GitHub - Updates automatically!
 
 ## 🎮 How to Play
 
