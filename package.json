@@ -1,0 +1,12 @@
+{
+  "name": "cosmic-bingo",
+  "version": "1.0.0",
+  "description": "A super cool multiplayer bingo game with modern features",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "build": "echo 'No build required for static site'"
+  },
+  "keywords": ["bingo", "game", "multiplayer", "cosmic"],
+  "author": "Seth Paonessa",
+  "license": "MIT"
+}
