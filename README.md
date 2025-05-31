@@ -1,53 +1,61 @@
-# 🚀 COSMIC BINGO
+# 🎮 Galaxy Games
 
 **Live at**: https://ornate-duckanoo-41fe58.netlify.app
 
-A super cool, modern bingo game with awesome visual effects!
+A collection of awesome browser games you can play with friends!
+
+## 🎯 Available Games
+
+### 1. Cosmic Bingo
+- Classic bingo with a cosmic twist
+- 4-player multiplayer support
+- Power-ups and reactions
+- 5 beautiful themes
+- Sound effects and animations
+
+### 2. Castle Siege (NEW!)
+- Physics-based castle destruction game
+- Turn-based combat
+- Player vs AI (PvP coming soon)
+- Adjustable power and angle
+- Destructible environments
+
+### 3. More Coming Soon!
+- Space Invaders remix
+- Puzzle games
+- Racing games
+- And more!
+
+## 🚀 Features
+- No downloads required
+- Works on all devices
+- Free to play forever
+- Regular new game additions
+
+## 🛠️ Tech Stack
+- Pure HTML5, CSS3, JavaScript
+- Canvas API for game graphics
+- Responsive design
+- Hosted on Netlify
+
+## 📁 Project Structure
+```
+galaxy-games/
+├── index.html          # Main game portal
+├── games/
+│   ├── cosmic-bingo/   # Bingo game
+│   └── castle-siege/   # Castle destruction game
+├── deploy.sh           # Auto-deploy script
+└── README.md          # This file
+```
+
+## 🔧 Development
+```bash
+# Make changes
+./deploy.sh
+# Automatically deploys to GitHub → Netlify
+```
 
 **Auto-Deploy**: ✅ Connected to GitHub - Updates automatically!
 
-## 🎮 How to Play
-
-1. **Open the game**: Just double-click `index.html`
-2. **Your Card**: You get a random bingo card with numbers 1-75
-3. **Mark Numbers**: Click on called numbers to mark them (they turn purple!)
-4. **Call Numbers**: Click "Call Next Number" to draw a new number
-5. **WIN**: Get 5 in a row (horizontal, vertical, or diagonal) to win!
-
-## ✨ Cool Features
-
-### Already Included:
-- 🌌 **Cosmic Theme**: Animated starfield background
-- 🎨 **Glassmorphism UI**: Modern frosted glass effects
-- 🎯 **Auto-marking**: Numbers automatically highlight when called
-- 🎆 **Win Animation**: Confetti explosion when you get BINGO!
-- 📱 **Responsive**: Works on phones, tablets, and desktop
-- 🆔 **Room Codes**: Each game gets a unique cosmic room code
-
-### Ready for Multiplayer:
-The game structure is ready for real-time multiplayer. We can add:
-- Live player cursors
-- Real-time number sync
-- Player avatars
-- Chat reactions
-- Leaderboards
-
-## 🎯 Quick Start for Multiplayer
-
-To make it multiplayer, we'd add:
-1. A simple backend (Node.js + Socket.io)
-2. Room joining with the room codes
-3. Real-time sync of called numbers
-4. Player presence indicators
-
-Want me to add multiplayer next? It'll take about 30 more minutes!
-
-## 🎨 Customization
-
-The game uses CSS variables and modern gradients. Easy to customize:
-- Change colors in the CSS
-- Add new win patterns
-- Create themes (change the gradients!)
-- Add sound effects
-
-Enjoy your COSMIC BINGO! 🎉 
+Enjoy the games! 🎮✨

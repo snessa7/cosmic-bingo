@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 🚀 Cosmic Bingo Auto-Deploy Script
+# 🎮 Galaxy Games Auto-Deploy Script
 # Automatically pushes to GitHub → Netlify deploys automatically!
 
 # Colors for output
@@ -10,7 +10,7 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}🎮 Cosmic Bingo Auto-Deploy Script${NC}"
+echo -e "${BLUE}🎮 Galaxy Games Auto-Deploy Script${NC}"
 echo -e "${BLUE}=================================${NC}"
 
 # Change to the correct directory
@@ -40,7 +40,7 @@ git add -A
 # Commit with timestamp
 TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
 echo -e "${GREEN}✅ Committing changes...${NC}"
-git commit -m "🎮 Update Cosmic Bingo - $TIMESTAMP"
+git commit -m "🎮 Update Galaxy Games - $TIMESTAMP"
 
 # Push to GitHub
 echo -e "${GREEN}✅ Pushing to GitHub...${NC}"

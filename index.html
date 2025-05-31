@@ -3,11 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic Bingo 🚀 - Multiplayer Edition</title>
-    
-    <!-- PeerJS for P2P multiplayer -->
-    <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
-    
+    <title>Galaxy Games - Play Free Online Games</title>
     <style>
         * {
             margin: 0;
@@ -20,37 +16,15 @@
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             color: white;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
             overflow-x: hidden;
-            position: relative;
-        }
-
-        /* Theme variations */
-        body.theme-cyber {
-            background: linear-gradient(135deg, #0f0f0f, #1a0033, #330066);
-        }
-        
-        body.theme-ocean {
-            background: linear-gradient(135deg, #0077be, #0099cc, #00bbff);
-        }
-        
-        body.theme-sunset {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24, #feca57);
-        }
-        
-        body.theme-galaxy {
-            background: radial-gradient(ellipse at center, #1a0033 0%, #000000 25%, #330066 50%, #000000 75%, #660099 100%);
         }
 
         .stars {
             position: fixed;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
+            top: 0;
+            left: 0;
             pointer-events: none;
         }
 
@@ -70,10 +44,8 @@
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            padding: 40px 20px;
             animation: slideDown 0.5s ease-out;
-            width: 100%;
-            max-width: 1200px;
         }
 
         @keyframes slideDown {
@@ -97,638 +69,263 @@
             margin-bottom: 10px;
             animation: pulse 3s ease-in-out infinite;
         }
-        
+
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
 
-        .game-info {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .info-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            display: inline-block;
-        }
-
-        .room-code {
+        .tagline {
             font-size: 1.5rem;
-            font-weight: bold;
             color: #00ffff;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
         }
 
-        .players-container {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .player-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            position: relative;
-            animation: bounceIn 0.5s ease;
-        }
-
-        @keyframes bounceIn {
-            0% { transform: scale(0); }
-            60% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        .player-avatar.host {
-            border: 3px solid gold;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-        }
-
-        .main-container {
-            display: flex;
-            gap: 30px;
-            align-items: flex-start;
-            width: 100%;
+        .games-container {
             max-width: 1200px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .bingo-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
             animation: fadeIn 0.5s ease-out 0.3s both;
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: scale(0.9);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
-                transform: scale(1);
+                transform: translateY(0);
             }
         }
-        .bingo-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-        }
 
-        .bingo-cell {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: pointer;
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            display: block;
             position: relative;
             overflow: hidden;
         }
 
-        .bingo-cell:hover {
-            transform: scale(1.05);
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        .game-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3);
         }
 
-        .bingo-cell.marked {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            animation: markCell 0.5s ease;
-        }
-
-        @keyframes markCell {
-            0% {
-                transform: scale(1) rotate(0deg);
-            }
-            50% {
-                transform: scale(1.2) rotate(180deg);
-            }
-            100% {
-                transform: scale(1) rotate(360deg);
-            }
-        }
-
-        .bingo-cell.free {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            font-size: 1rem;
-        }
-
-        .side-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            min-width: 300px;
-        }
-
-        .controls {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00);
             border-radius: 20px;
-            padding: 30px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            animation: fadeIn 0.5s ease-out 0.5s both;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
         }
 
-        .current-number {
-            text-align: center;
+        .game-card:hover::before {
+            opacity: 0.3;
+        }
+
+        .game-thumbnail {
+            width: 100%;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
             margin-bottom: 20px;
-        }
-
-        .number-display {
-            font-size: 4rem;
-            font-weight: 900;
-            color: #ffff00;
-            text-shadow: 0 0 30px rgba(255, 255, 0, 0.8);
-            margin: 20px 0;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .power-ups {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .power-up {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            padding: 10px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .power-up:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-        }
-
-        .power-up.active {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .called-numbers {
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .called-numbers h3 {
-            margin-bottom: 10px;
-            color: #00ffff;
-        }
-
-        .called-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-
-        .called-num {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-        }
-        .chat-section {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            height: 300px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .reactions {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            justify-content: center;
-        }
-
-        .reaction-btn {
-            font-size: 2rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .reaction-btn:hover {
-            transform: scale(1.3);
-        }
-
-        .floating-reaction {
-            position: fixed;
-            font-size: 3rem;
-            pointer-events: none;
-            animation: floatUp 3s ease-out forwards;
-            z-index: 100;
-        }
-
-        @keyframes floatUp {
-            0% {
-                opacity: 1;
-                transform: translateY(0) scale(0);
-            }
-            10% {
-                transform: translateY(-20px) scale(1);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-300px) scale(1.5) rotate(360deg);
-            }
-        }
-
-        .win-animation {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 6rem;
-            font-weight: 900;
-            z-index: 1000;
-            animation: winPulse 2s ease-out;
-            pointer-events: none;
-            background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 50px rgba(255, 0, 255, 0.8);
-        }
-
-        @keyframes winPulse {
-            0% {
-                transform: translate(-50%, -50%) scale(0) rotate(0deg);
-                opacity: 0;
-            }
-            50% {
-                transform: translate(-50%, -50%) scale(1.5) rotate(180deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            top: -10px;
-            animation: confettiFall 3s linear;
-            pointer-events: none;
-        }
-
-        @keyframes confettiFall {
-            to {
-                transform: translateY(100vh) rotate(360deg);
-            }
-        }
-
-        .setup-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 2000;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
         }
 
-        .modal-content {
-            background: rgba(30, 30, 50, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 40px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-        }
-
-        .modal-content h2 {
-            color: #00ffff;
-            margin-bottom: 30px;
-            font-size: 2.5rem;
-        }
-
-        .setup-options {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
-
-        .setup-btn {
-            flex: 1;
-            padding: 20px;
-            font-size: 1.2rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .setup-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-        }
-
-        .setup-btn.selected {
+        .game-thumbnail.bingo {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-color: transparent;
         }
 
-        .room-input {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.2rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            color: white;
-            text-align: center;
-            margin-bottom: 20px;
-            text-transform: uppercase;
+        .game-thumbnail.castle {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
 
-        .room-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+        .game-thumbnail.coming-soon {
+            background: linear-gradient(135deg, #505285 0%, #585989 100%);
         }
 
-        .theme-selector {
+        .game-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00ffff;
+        }
+
+        .game-description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .game-badges {
             display: flex;
             gap: 10px;
-            justify-content: center;
-            margin-top: 20px;
+            flex-wrap: wrap;
         }
 
-        .theme-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .theme-btn:hover {
-            transform: scale(1.1);
-            border-color: white;
+        .badge.new {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+            border: none;
+            color: #0a0a0a;
+            font-weight: bold;
         }
 
-        .theme-btn.cosmic {
-            background: linear-gradient(135deg, #0f0c29, #302b63);
+        .badge.multiplayer {
+            background: linear-gradient(135deg, #ff00ff 0%, #ff0080 100%);
+            border: none;
         }
 
-        .theme-btn.cyber {
-            background: linear-gradient(135deg, #0f0f0f, #330066);
+        .badge.pvp {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            border: none;
         }
 
-        .theme-btn.ocean {
-            background: linear-gradient(135deg, #0077be, #00bbff);
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
         }
 
-        .theme-btn.sunset {
-            background: linear-gradient(135deg, #ff6b6b, #feca57);
+        .floating-emoji {
+            position: fixed;
+            font-size: 3rem;
+            pointer-events: none;
+            animation: float 8s infinite ease-in-out;
+            opacity: 0.3;
         }
 
-        .theme-btn.galaxy {
-            background: radial-gradient(ellipse at center, #7b2cbf 0%, #3a0ca3 30%, #161a1d 100%);
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-100px) translateX(50px) rotate(90deg);
+            }
+            50% {
+                transform: translateY(-50px) translateX(-50px) rotate(180deg);
+            }
+            75% {
+                transform: translateY(-150px) translateX(30px) rotate(270deg);
+            }
         }
 
         @media (max-width: 768px) {
             h1 {
                 font-size: 3rem;
             }
-            .main-container {
-                flex-direction: column;
-            }
-            .side-panel {
-                min-width: 100%;
-            }
-            .power-ups {
-                grid-template-columns: repeat(2, 1fr);
+            .games-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
-<body>    <div class="stars"></div>
+<body>
+    <div class="stars"></div>
     
-    <!-- Setup Modal -->
-    <div class="setup-modal" id="setupModal">
-        <div class="modal-content">
-            <h2>Welcome to Cosmic Bingo!</h2>
-            <div class="setup-options">
-                <button class="setup-btn" onclick="selectMode('host')">Host Game</button>
-                <button class="setup-btn" onclick="selectMode('join')">Join Game</button>
-            </div>
-            <input type="text" class="room-input" id="roomInput" placeholder="Enter Room Code" style="display: none;">
-            <button class="btn btn-primary" onclick="startGame()">Start Playing!</button>
-            
-            <div class="theme-selector">
-                <button class="theme-btn cosmic" onclick="setTheme('cosmic')" title="Cosmic"></button>
-                <button class="theme-btn cyber" onclick="setTheme('cyber')" title="Cyber"></button>
-                <button class="theme-btn ocean" onclick="setTheme('ocean')" title="Ocean"></button>
-                <button class="theme-btn sunset" onclick="setTheme('sunset')" title="Sunset"></button>
-                <button class="theme-btn galaxy" onclick="setTheme('galaxy')" title="Galaxy"></button>
-            </div>
-        </div>
-    </div>
-    
-    <div class="header">
-        <h1>COSMIC BINGO</h1>
-        <div class="game-info">
-            <div class="info-card">
-                Room Code: <span class="room-code" id="roomCode">----</span>
-            </div>
-            <div class="info-card">
-                <div class="players-container" id="playersContainer">
-                    <span>Players:</span>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Floating decorations -->
+    <div class="floating-emoji" style="top: 10%; left: 10%; animation-delay: 0s;">🎮</div>
+    <div class="floating-emoji" style="top: 20%; right: 15%; animation-delay: 2s;">🚀</div>
+    <div class="floating-emoji" style="bottom: 30%; left: 5%; animation-delay: 4s;">⭐</div>
+    <div class="floating-emoji" style="bottom: 10%; right: 10%; animation-delay: 6s;">🎯</div>
 
-    <div class="main-container">
-        <div class="bingo-card">
-            <div class="bingo-grid" id="bingoGrid"></div>
-        </div>
+    <header class="header">
+        <h1>GALAXY GAMES</h1>
+        <p class="tagline">Play Amazing Games with Friends!</p>
+    </header>
 
-        <div class="side-panel">
-            <div class="controls">
-                <div class="current-number">
-                    <h2>Current Number</h2>
-                    <div class="number-display" id="currentNumber">-</div>
-                </div>
-                
-                <button class="btn btn-primary" id="callButton" onclick="callNumber()">Call Next Number</button>
-                <button class="btn btn-secondary" onclick="newGame()">New Game</button>
-                
-                <div class="power-ups">
-                    <div class="power-up" onclick="usePowerUp('reveal')" title="Reveal a number on your card">
-                        🔮 Reveal
-                    </div>
-                    <div class="power-up" onclick="usePowerUp('double')" title="Next number counts double">
-                        ⚡ Double
-                    </div>
-                    <div class="power-up" onclick="usePowerUp('freeze')" title="Freeze other players for 5 seconds">
-                        ❄️ Freeze
-                    </div>
-                    <div class="power-up" onclick="usePowerUp('wild')" title="Mark any number">
-                        🌟 Wild
-                    </div>
-                </div>
-                
-                <div class="called-numbers">
-                    <h3>Called Numbers</h3>
-                    <div class="called-list" id="calledList"></div>
-                </div>
+    <main class="games-container">
+        <!-- Cosmic Bingo -->
+        <a href="games/cosmic-bingo/" class="game-card">
+            <div class="game-thumbnail bingo">
+                🎱
             </div>
-            
-            <div class="chat-section">
-                <div class="reactions">
-                    <button class="reaction-btn" onclick="sendReaction('🎉')">🎉</button>
-                    <button class="reaction-btn" onclick="sendReaction('😎')">😎</button>
-                    <button class="reaction-btn" onclick="sendReaction('🔥')">🔥</button>
-                    <button class="reaction-btn" onclick="sendReaction('💯')">💯</button>
-                    <button class="reaction-btn" onclick="sendReaction('🚀')">🚀</button>
-                </div>
+            <h2 class="game-title">Cosmic Bingo</h2>
+            <p class="game-description">
+                Classic bingo with a cosmic twist! Play with up to 4 friends, use power-ups, 
+                and experience amazing visual effects.
+            </p>
+            <div class="game-badges">
+                <span class="badge multiplayer">Multiplayer</span>
+                <span class="badge">Power-ups</span>
+                <span class="badge">5 Themes</span>
+            </div>
+        </a>
+
+        <!-- Castle Siege -->
+        <a href="games/castle-siege/" class="game-card">
+            <div class="game-thumbnail castle">
+                🏰
+            </div>
+            <h2 class="game-title">Castle Siege</h2>
+            <p class="game-description">
+                Destroy your opponent's castle in this turn-based battle game! 
+                Play against friends or AI in epic physics-based combat.
+            </p>
+            <div class="game-badges">
+                <span class="badge new">NEW!</span>
+                <span class="badge pvp">PvP</span>
+                <span class="badge">Physics</span>
+            </div>
+        </a>
+
+        <!-- Coming Soon -->
+        <div class="game-card" style="opacity: 0.7; cursor: not-allowed;">
+            <div class="game-thumbnail coming-soon">
+                🎲
+            </div>
+            <h2 class="game-title">More Games Coming Soon!</h2>
+            <p class="game-description">
+                We're working on more awesome games. Check back soon for new additions 
+                to the Galaxy Games collection!
+            </p>
+            <div class="game-badges">
+                <span class="badge">Coming Soon</span>
             </div>
         </div>
-    </div>
+    </main>
 
-    <audio id="clickSound" preload="auto">
-        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZURE" type="audio/wav">
-    </audio>
-    
-    <audio id="winSound" preload="auto">
-        <source src="data:audio/wav;base64,UklGRpAHAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YWwHAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZURE8VqPn77d5FwUlcM728paKWR0dh9Pz15AxBixszO7dpDQGIWnG6uyLLwcUXLLp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZURELSaPk9b59jqJWDQU+mtvyxnIqBjiS1/LMeS0GsKug0/HMazQFOI/a78p7K4mz/eWQOAYqgs/n2Y48GWLLnrvXfS0FMIjS9NWNTwsTZLft5ppUFiNzxu/foTcGLXHG" type="audio/wav">
-    </audio>
+    <footer class="footer">
+        <p>Galaxy Games © 2025 | Made with ❤️ and cosmic energy</p>
+    </footer>
+
     <script>
-        // Game state
-        let peer = null;
-        let connections = [];
-        let isHost = false;
-        let gameMode = null;
-        let roomCode = '';
-        let calledNumbers = [];
-        let bingoCard = [];
-        let gameActive = false;
-        let myPeerId = '';
-        let players = [{
-            id: 'me',
-            name: 'You',
-            emoji: '🎮',
-            isHost: false
-        }];
-        let powerUps = {
-            reveal: 1,
-            double: 1,
-            freeze: 1,
-            wild: 1
-        };
-
-        // Sound effects
-        const sounds = {
-            click: document.getElementById('clickSound'),
-            win: document.getElementById('winSound')
-        };
-
-        // Play sound
-        function playSound(soundName) {
-            const sound = sounds[soundName];
-            if (sound) {
-                sound.currentTime = 0;
-                sound.play().catch(() => {});
-            }
-        }
-
-        // Create starfield background
+        // Create starfield
         function createStars() {
             const starsContainer = document.querySelector('.stars');
-            for (let i = 0; i < 100; i++) {
+            for (let i = 0; i < 150; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 star.style.left = Math.random() * 100 + '%';
@@ -738,515 +335,18 @@
             }
         }
 
-        // Set theme
-        function setTheme(theme) {
-            document.body.className = theme === 'cosmic' ? '' : `theme-${theme}`;
-            playSound('click');
+        // Add hover sound effect (optional)
+        function playHoverSound() {
+            // Add sound effects here if desired
         }
 
-        // Select game mode (host/join)
-        function selectMode(mode) {
-            gameMode = mode;
-            const btns = document.querySelectorAll('.setup-btn');
-            btns.forEach(btn => btn.classList.remove('selected'));
-            event.target.classList.add('selected');
-            
-            if (mode === 'join') {
-                document.getElementById('roomInput').style.display = 'block';
-            } else {
-                document.getElementById('roomInput').style.display = 'none';
-            }
-            playSound('click');
-        }
-
-        // Generate room code
-        function generateRoomCode() {
-            const words = ['STAR', 'MOON', 'NOVA', 'COMET', 'SPACE', 'ORBIT', 'COSMIC', 'GALAXY', 'NEBULA'];
-            const word = words[Math.floor(Math.random() * words.length)];
-            const number = Math.floor(Math.random() * 1000);
-            return `${word}-${number}`;
-        }
-
-        // Initialize peer connection
-        function initializePeer() {
-            return new Promise((resolve, reject) => {
-                peer = new Peer();
-                
-                peer.on('open', (id) => {
-                    myPeerId = id;
-                    console.log('My peer ID:', id);
-                    resolve(id);
-                });
-                
-                peer.on('error', (err) => {
-                    console.error('Peer error:', err);
-                    reject(err);
-                });
-                
-                peer.on('connection', (conn) => {
-                    setupConnection(conn);
-                });
-            });
-        }
-        // Setup connection handlers
-        function setupConnection(conn) {
-            conn.on('open', () => {
-                connections.push(conn);
-                console.log('Connected to:', conn.peer);
-                
-                // Send initial game state
-                if (isHost) {
-                    conn.send({
-                        type: 'gameState',
-                        calledNumbers: calledNumbers,
-                        players: players
-                    });
-                }
-            });
-            
-            conn.on('data', (data) => {
-                handleMessage(data, conn);
-            });
-            
-            conn.on('close', () => {
-                connections = connections.filter(c => c !== conn);
-                updatePlayersList();
-            });
-        }
-
-        // Handle incoming messages
-        function handleMessage(data, conn) {
-            switch(data.type) {
-                case 'gameState':
-                    calledNumbers = data.calledNumbers;
-                    players = data.players;
-                    updateUI();
-                    break;
-                    
-                case 'numberCalled':
-                    calledNumbers.push(data.number);
-                    updateNumber(data.number);
-                    break;
-                    
-                case 'playerJoined':
-                    if (!players.find(p => p.id === data.player.id)) {
-                        players.push(data.player);
-                        updatePlayersList();
-                        broadcast({type: 'playerJoined', player: data.player}, conn);
-                    }
-                    break;
-                    
-                case 'reaction':
-                    showFloatingReaction(data.emoji);
-                    broadcast(data, conn);
-                    break;
-                    
-                case 'bingo':
-                    showWinAnimation(data.playerId);
-                    broadcast(data, conn);
-                    break;
-                    
-                case 'powerUp':
-                    handlePowerUp(data);
-                    broadcast(data, conn);
-                    break;
-            }
-        }
-
-        // Broadcast message to all connections
-        function broadcast(message, excludeConn = null) {
-            connections.forEach(conn => {
-                if (conn !== excludeConn && conn.open) {
-                    conn.send(message);
-                }
-            });
-        }
-
-        // Start game
-        async function startGame() {
-            if (!gameMode) {
-                alert('Please select Host or Join');
-                return;
-            }
-            
-            try {
-                await initializePeer();
-                
-                if (gameMode === 'host') {
-                    isHost = true;
-                    roomCode = generateRoomCode();
-                    players[0].isHost = true;
-                    
-                    // Create a simple relay server using the room code
-                    // In a real app, this would be a proper signaling server
-                    document.getElementById('roomCode').textContent = roomCode;
-                    document.getElementById('callButton').disabled = false;
-                } else {
-                    roomCode = document.getElementById('roomInput').value.toUpperCase();
-                    if (!roomCode) {
-                        alert('Please enter a room code');
-                        return;
-                    }
-                    
-                    document.getElementById('roomCode').textContent = roomCode;
-                    document.getElementById('callButton').disabled = true;
-                    
-                    // For demo purposes, we'll use a simplified connection
-                    // In production, you'd use a signaling server
-                    alert('Multiplayer connection requires a signaling server. Playing in demo mode!');
-                    isHost = true; // Demo mode
-                }
-                
-                document.getElementById('setupModal').style.display = 'none';
-                gameActive = true;
-                newGame();
-                updatePlayersList();
-                
-            } catch (error) {
-                console.error('Failed to start game:', error);
-                alert('Failed to connect. Playing in offline mode!');
-                isHost = true;
-                roomCode = generateRoomCode();
-                document.getElementById('roomCode').textContent = roomCode;
-                document.getElementById('setupModal').style.display = 'none';
-                gameActive = true;
-                newGame();
-            }
-        }
-        // Update players list
-        function updatePlayersList() {
-            const container = document.getElementById('playersContainer');
-            container.innerHTML = '<span>Players:</span>';
-            
-            players.forEach(player => {
-                const avatar = document.createElement('div');
-                avatar.className = 'player-avatar' + (player.isHost ? ' host' : '');
-                avatar.textContent = player.emoji;
-                avatar.title = player.name;
-                avatar.style.background = `linear-gradient(135deg, hsl(${Math.random() * 360}, 70%, 50%), hsl(${Math.random() * 360}, 70%, 60%))`;
-                container.appendChild(avatar);
-            });
-        }
-
-        // Generate random bingo card
-        function generateBingoCard() {
-            const card = [];
-            const ranges = [
-                [1, 15],   // B
-                [16, 30],  // I
-                [31, 45],  // N
-                [46, 60],  // G
-                [61, 75]   // O
-            ];
-
-            for (let col = 0; col < 5; col++) {
-                const [min, max] = ranges[col];
-                const columnNumbers = [];
-                
-                while (columnNumbers.length < 5) {
-                    const num = Math.floor(Math.random() * (max - min + 1)) + min;
-                    if (!columnNumbers.includes(num)) {
-                        columnNumbers.push(num);
-                    }
-                }
-                
-                card.push(columnNumbers);
-            }
-
-            // Free space in center
-            card[2][2] = 'FREE';
-            
-            return card;
-        }
-
-        // Render bingo card
-        function renderBingoCard() {
-            const grid = document.getElementById('bingoGrid');
-            grid.innerHTML = '';
-            
-            // Add BINGO headers
-            const headers = ['B', 'I', 'N', 'G', 'O'];
-            headers.forEach(letter => {
-                const header = document.createElement('div');
-                header.className = 'bingo-cell';
-                header.style.background = 'linear-gradient(135deg, #00ffff 0%, #ff00ff 100%)';
-                header.textContent = letter;
-                grid.appendChild(header);
-            });
-            
-            // Add numbers
-            for (let row = 0; row < 5; row++) {
-                for (let col = 0; col < 5; col++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'bingo-cell';
-                    
-                    if (bingoCard[col][row] === 'FREE') {
-                        cell.classList.add('free');
-                        cell.textContent = '⭐ FREE';
-                        cell.classList.add('marked');
-                    } else {
-                        cell.textContent = bingoCard[col][row];
-                        cell.onclick = () => toggleCell(cell);
-                        cell.dataset.number = bingoCard[col][row];
-                    }
-                    
-                    grid.appendChild(cell);
-                }
-            }
-        }
-
-        // Toggle cell marked state
-        function toggleCell(cell) {
-            if (!gameActive || cell.classList.contains('free')) return;
-            
-            const number = parseInt(cell.dataset.number);
-            if (calledNumbers.includes(number)) {
-                cell.classList.toggle('marked');
-                playSound('click');
-                checkForWin();
-            }
-        }
-
-        // Call a new number
-        function callNumber() {
-            if (!gameActive || !isHost) return;
-            
-            let number;
-            do {
-                number = Math.floor(Math.random() * 75) + 1;
-            } while (calledNumbers.includes(number));
-            
-            calledNumbers.push(number);
-            updateNumber(number);
-            
-            // Broadcast to other players
-            broadcast({type: 'numberCalled', number: number});
-            
-            playSound('click');
-        }
-        // Update number display
-        function updateNumber(number) {
-            // Update display
-            document.getElementById('currentNumber').textContent = getLetter(number) + number;
-            
-            // Add to called list
-            const calledList = document.getElementById('calledList');
-            const numElement = document.createElement('div');
-            numElement.className = 'called-num';
-            numElement.textContent = getLetter(number) + number;
-            calledList.appendChild(numElement);
-            
-            // Auto-mark if exists on card
-            const cells = document.querySelectorAll('.bingo-cell');
-            cells.forEach(cell => {
-                if (cell.dataset.number == number) {
-                    cell.classList.add('marked');
-                    checkForWin();
-                }
-            });
-            
-            // Animate current number
-            const display = document.getElementById('currentNumber');
-            display.style.animation = 'none';
-            setTimeout(() => {
-                display.style.animation = 'markCell 0.5s ease';
-            }, 10);
-        }
-
-        // Get letter for number
-        function getLetter(number) {
-            if (number <= 15) return 'B-';
-            if (number <= 30) return 'I-';
-            if (number <= 45) return 'N-';
-            if (number <= 60) return 'G-';
-            return 'O-';
-        }
-
-        // Check for winning patterns
-        function checkForWin() {
-            const cells = Array.from(document.querySelectorAll('.bingo-cell')).slice(5); // Skip headers
-            const marked = cells.map(cell => cell.classList.contains('marked'));
-            
-            // Check rows
-            for (let row = 0; row < 5; row++) {
-                if (marked.slice(row * 5, (row + 1) * 5).every(m => m)) {
-                    win();
-                    return;
-                }
-            }
-            
-            // Check columns
-            for (let col = 0; col < 5; col++) {
-                const column = [];
-                for (let row = 0; row < 5; row++) {
-                    column.push(marked[row * 5 + col]);
-                }
-                if (column.every(m => m)) {
-                    win();
-                    return;
-                }
-            }
-            
-            // Check diagonals
-            const diagonal1 = [0, 6, 12, 18, 24].every(i => marked[i]);
-            const diagonal2 = [4, 8, 12, 16, 20].every(i => marked[i]);
-            
-            if (diagonal1 || diagonal2) {
-                win();
-            }
-        }
-
-        // Win animation
-        function win() {
-            gameActive = false;
-            playSound('win');
-            
-            // Broadcast win
-            broadcast({type: 'bingo', playerId: myPeerId});
-            
-            showWinAnimation(myPeerId);
-        }
-
-        // Show win animation
-        function showWinAnimation(playerId) {
-            // Show win message
-            const winMessage = document.createElement('div');
-            winMessage.className = 'win-animation';
-            winMessage.textContent = playerId === myPeerId ? 'BINGO!' : 'Someone got BINGO!';
-            document.body.appendChild(winMessage);
-            
-            // Create confetti
-            for (let i = 0; i < 100; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + '%';
-                    confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
-                    document.body.appendChild(confetti);
-                    
-                    setTimeout(() => confetti.remove(), 3000);
-                }, i * 20);
-            }
-            
-            setTimeout(() => winMessage.remove(), 2000);
-        }
-        // Send reaction
-        function sendReaction(emoji) {
-            showFloatingReaction(emoji);
-            broadcast({type: 'reaction', emoji: emoji});
-            playSound('click');
-        }
-
-        // Show floating reaction
-        function showFloatingReaction(emoji) {
-            const reaction = document.createElement('div');
-            reaction.className = 'floating-reaction';
-            reaction.textContent = emoji;
-            reaction.style.left = Math.random() * 80 + 10 + '%';
-            reaction.style.bottom = '100px';
-            document.body.appendChild(reaction);
-            
-            setTimeout(() => reaction.remove(), 3000);
-        }
-
-        // Use power-up
-        function usePowerUp(type) {
-            if (powerUps[type] <= 0) return;
-            
-            powerUps[type]--;
-            playSound('click');
-            
-            switch(type) {
-                case 'reveal':
-                    // Reveal a random uncalled number on your card
-                    const unrevealedCells = Array.from(document.querySelectorAll('.bingo-cell[data-number]'))
-                        .filter(cell => !cell.classList.contains('marked') && !calledNumbers.includes(parseInt(cell.dataset.number)));
-                    
-                    if (unrevealedCells.length > 0) {
-                        const randomCell = unrevealedCells[Math.floor(Math.random() * unrevealedCells.length)];
-                        randomCell.classList.add('marked');
-                        randomCell.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)';
-                        checkForWin();
-                    }
-                    break;
-                    
-                case 'double':
-                    // Next number counts as two marks
-                    alert('Next number will count double! (Feature coming soon)');
-                    break;
-                    
-                case 'freeze':
-                    // Freeze other players
-                    broadcast({type: 'powerUp', powerType: 'freeze'});
-                    alert('Other players frozen for 5 seconds!');
-                    break;
-                    
-                case 'wild':
-                    // Mark any number
-                    alert('Click any number to mark it as wild!');
-                    break;
-            }
-            
-            // Update power-up display
-            event.target.style.opacity = powerUps[type] > 0 ? '1' : '0.3';
-        }
-
-        // Handle power-up effects
-        function handlePowerUp(data) {
-            if (data.powerType === 'freeze') {
-                // Freeze UI for 5 seconds
-                document.body.style.filter = 'blur(5px)';
-                setTimeout(() => {
-                    document.body.style.filter = 'none';
-                }, 5000);
-            }
-        }
-
-        // Start new game
-        function newGame() {
-            gameActive = true;
-            calledNumbers = [];
-            bingoCard = generateBingoCard();
-            renderBingoCard();
-            document.getElementById('currentNumber').textContent = '-';
-            document.getElementById('calledList').innerHTML = '';
-            
-            // Reset power-ups
-            powerUps = {
-                reveal: 1,
-                double: 1,
-                freeze: 1,
-                wild: 1
-            };
-            
-            document.querySelectorAll('.power-up').forEach(el => {
-                el.style.opacity = '1';
-            });
-        }
-
-        // Update UI
-        function updateUI() {
-            // Update called numbers display
-            document.getElementById('calledList').innerHTML = '';
-            calledNumbers.forEach(num => {
-                const numElement = document.createElement('div');
-                numElement.className = 'called-num';
-                numElement.textContent = getLetter(num) + num;
-                document.getElementById('calledList').appendChild(numElement);
-            });
-            
-            // Update current number
-            if (calledNumbers.length > 0) {
-                const lastNumber = calledNumbers[calledNumbers.length - 1];
-                document.getElementById('currentNumber').textContent = getLetter(lastNumber) + lastNumber;
-            }
-            
-            updatePlayersList();
-        }
-
-        // Initialize game
+        // Initialize
         createStars();
+
+        // Add hover effects
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('mouseenter', playHoverSound);
+        });
     </script>
 </body>
 </html>

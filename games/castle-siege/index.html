@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Castle Siege - Galaxy Games</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .player-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .player-info.active {
+            border-color: #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .game-canvas {
+            flex: 1;
+            position: relative;
+            background: linear-gradient(to bottom, #87CEEB 0%, #98D8E8 50%, #B0E0E6 100%);
+            overflow: hidden;
+        }
+
+        #gameCanvas {
+            display: block;
+            cursor: crosshair;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-fire {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        .btn-fire:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(238, 90, 36, 0.5);
+        }
+
+        .btn-fire:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .power-slider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .power-slider input {
+            width: 150px;
+        }
+
+        .trajectory-line {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .projectile {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ff6b6b, #ee5a24);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.8);
+        }
+
+        .castle-block {
+            position: absolute;
+            border: 2px solid rgba(0, 0, 0, 0.3);
+        }
+
+        .castle-block.stone {
+            background: linear-gradient(135deg, #8b8680, #696969);
+        }
+
+        .castle-block.wood {
+            background: linear-gradient(135deg, #8b4513, #a0522d);
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to bottom, #228b22, #006400);
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 100px;
+            opacity: 0.7;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(50px); }
+        }
+
+        .explosion {
+            position: absolute;
+            pointer-events: none;
+            animation: explode 0.5s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+
+        .win-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .win-content {
+            background: rgba(30, 30, 50, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .win-content h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <a href="../../" class="back-btn">← Back to Games</a>
+    
+    <header class="header">
+        <h1>CASTLE SIEGE</h1>
+        <div class="game-info">
+            <div class="player-info active" id="player1">
+                <h3>Player 1</h3>
+                <p>Castle Health: <span id="p1Health">100</span>%</p>
+            </div>
+            <div class="turn-indicator">
+                <p id="turnText">Player 1's Turn</p>
+            </div>
+            <div class="player-info" id="player2">
+                <h3>Player 2 (AI)</h3>
+                <p>Castle Health: <span id="p2Health">100</span>%</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="game-canvas">
+        <canvas id="gameCanvas"></canvas>
+        <div class="ground"></div>
+        
+        <!-- Controls -->
+        <div class="controls">
+            <div class="power-slider">
+                <label>Power:</label>
+                <input type="range" id="powerSlider" min="10" max="100" value="50">
+                <span id="powerValue">50</span>
+            </div>
+            <div class="angle-control">
+                <label>Angle:</label>
+                <input type="range" id="angleSlider" min="-90" max="90" value="45">
+                <span id="angleValue">45°</span>
+            </div>
+            <button class="btn btn-fire" id="fireBtn">FIRE!</button>
+        </div>
+    </div>
+
+    <!-- Win Screen -->
+    <div class="win-screen" id="winScreen">
+        <div class="win-content">
+            <h2 id="winText">Player 1 Wins!</h2>
+            <p>The enemy castle has been destroyed!</p>
+            <button class="btn btn-fire" onclick="restartGame()">Play Again</button>
+            <button class="btn" onclick="window.location.href='../../'">Back to Games</button>
+        </div>
+    </div>
+
+    <script>        // Game Variables
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let currentPlayer = 1;
+        let projectileActive = false;
+        let castles = {
+            player1: { health: 100, blocks: [] },
+            player2: { health: 100, blocks: [] }
+        };
+        let projectile = null;
+        let animationId = null;
+        let mousePos = { x: 0, y: 0 };
+        let aimAngle = 45;
+        let aimPower = 50;
+
+        // Physics constants
+        const GRAVITY = 0.5;
+        const WIND = Math.random() * 0.2 - 0.1; // Random wind
+
+        // Set canvas size
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight - 200; // Account for header and controls
+        }
+
+        // Castle block class
+        class Block {
+            constructor(x, y, width, height, type = 'stone') {
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+                this.type = type;
+                this.health = type === 'stone' ? 3 : 2;
+                this.falling = false;
+                this.velocity = { x: 0, y: 0 };
+            }
+
+            draw() {
+                ctx.save();
+                if (this.type === 'stone') {
+                    ctx.fillStyle = '#8b8680';
+                    ctx.strokeStyle = '#696969';
+                } else {
+                    ctx.fillStyle = '#8b4513';
+                    ctx.strokeStyle = '#654321';
+                }
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+                ctx.strokeRect(this.x, this.y, this.width, this.height);
+                ctx.restore();
+            }
+
+            takeDamage() {
+                this.health--;
+                if (this.health <= 0) {
+                    this.falling = true;
+                }
+            }
+
+            update() {
+                if (this.falling) {
+                    this.velocity.y += GRAVITY;
+                    this.y += this.velocity.y;
+                    this.x += this.velocity.x;
+                    
+                    // Remove if off screen
+                    if (this.y > canvas.height) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            checkCollision(x, y, radius) {
+                return x + radius > this.x && 
+                       x - radius < this.x + this.width &&
+                       y + radius > this.y && 
+                       y - radius < this.y + this.height;
+            }
+        }
+
+        // Build castles
+        function buildCastle(x, isPlayer1) {
+            const blocks = [];
+            const baseY = canvas.height - 100;
+            
+            // Castle structure
+            // Base
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 5; j++) {
+                    blocks.push(new Block(
+                        x + j * 40 - 80,
+                        baseY - i * 30,
+                        40,
+                        30,
+                        i < 2 ? 'stone' : 'wood'
+                    ));
+                }
+            }
+            
+            // Tower
+            for (let i = 0; i < 3; i++) {
+                blocks.push(new Block(
+                    x - 20,
+                    baseY - (i + 3) * 30,
+                    40,
+                    30,
+                    'wood'
+                ));
+            }
+            
+            return blocks;
+        }
+
+        // Initialize game
+        function initGame() {
+            resizeCanvas();
+            
+            // Build castles
+            castles.player1.blocks = buildCastle(150, true);
+            castles.player2.blocks = buildCastle(canvas.width - 150, false);
+            
+            // Reset health
+            castles.player1.health = 100;
+            castles.player2.health = 100;
+            updateHealthDisplay();
+        }
+
+        // Projectile class
+        class Projectile {
+            constructor(x, y, velocity) {
+                this.x = x;
+                this.y = y;
+                this.velocity = velocity;
+                this.radius = 10;
+                this.trail = [];
+            }
+
+            update() {
+                // Apply physics
+                this.velocity.y += GRAVITY;
+                this.velocity.x += WIND;
+                
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                
+                // Add to trail
+                this.trail.push({ x: this.x, y: this.y });
+                if (this.trail.length > 20) {
+                    this.trail.shift();
+                }
+                
+                // Check if out of bounds
+                return this.x > -50 && this.x < canvas.width + 50 && 
+                       this.y < canvas.height + 50;
+            }
+
+            draw() {
+                // Draw trail
+                ctx.strokeStyle = 'rgba(255, 107, 107, 0.3)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                this.trail.forEach((point, index) => {
+                    if (index === 0) {
+                        ctx.moveTo(point.x, point.y);
+                    } else {
+                        ctx.lineTo(point.x, point.y);
+                    }
+                });
+                ctx.stroke();
+                
+                // Draw projectile
+                ctx.fillStyle = '#ff6b6b';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Glow effect
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = '#ff6b6b';
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            checkCollisions(blocks) {
+                let hit = false;
+                blocks.forEach(block => {
+                    if (block.checkCollision(this.x, this.y, this.radius)) {
+                        block.takeDamage();
+                        hit = true;
+                        createExplosion(this.x, this.y);
+                    }
+                });
+                return hit;
+            }
+        }
+
+        // Create explosion effect
+        function createExplosion(x, y) {
+            // Simple particle effect
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'explosion';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.width = '10px';
+                particle.style.height = '10px';
+                particle.style.background = `hsl(${Math.random() * 60}, 100%, 50%)`;
+                particle.style.borderRadius = '50%';
+                document.querySelector('.game-canvas').appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 500);
+            }
+        }
+
+        // Draw aim trajectory
+        function drawTrajectory() {
+            if (projectileActive) return;
+            
+            const startX = currentPlayer === 1 ? 200 : canvas.width - 200;
+            const startY = canvas.height - 200;
+            
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            
+            // Calculate trajectory points
+            const power = aimPower / 3;
+            const angle = (aimAngle * Math.PI) / 180;
+            const vx = Math.cos(angle) * power * (currentPlayer === 1 ? 1 : -1);
+            const vy = -Math.sin(angle) * power;
+            
+            let x = startX;
+            let y = startY;
+            let tvx = vx;
+            let tvy = vy;
+            
+            ctx.moveTo(x, y);
+            
+            for (let i = 0; i < 30; i++) {
+                tvy += GRAVITY;
+                tvx += WIND;
+                x += tvx;
+                y += tvy;
+                ctx.lineTo(x, y);
+                
+                if (y > canvas.height - 100) break;
+            }
+            
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        // Fire projectile
+        function fire() {
+            if (projectileActive) return;
+            
+            const startX = currentPlayer === 1 ? 200 : canvas.width - 200;
+            const startY = canvas.height - 200;
+            const power = aimPower / 3;
+            const angle = (aimAngle * Math.PI) / 180;
+            
+            const velocity = {
+                x: Math.cos(angle) * power * (currentPlayer === 1 ? 1 : -1),
+                y: -Math.sin(angle) * power
+            };
+            
+            projectile = new Projectile(startX, startY, velocity);
+            projectileActive = true;
+            document.getElementById('fireBtn').disabled = true;
+        }
+
+        // Update health display
+        function updateHealthDisplay() {
+            document.getElementById('p1Health').textContent = Math.max(0, castles.player1.health);
+            document.getElementById('p2Health').textContent = Math.max(0, castles.player2.health);
+        }
+
+        // Switch turns
+        function switchTurn() {
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            document.getElementById('player1').classList.toggle('active');
+            document.getElementById('player2').classList.toggle('active');
+            document.getElementById('turnText').textContent = `Player ${currentPlayer}'s Turn`;
+            
+            projectileActive = false;
+            document.getElementById('fireBtn').disabled = false;
+            
+            // AI turn
+            if (currentPlayer === 2) {
+                setTimeout(aiTurn, 1000);
+            }
+        }
+
+        // Simple AI
+        function aiTurn() {
+            // Random aim with some intelligence
+            aimAngle = 30 + Math.random() * 30;
+            aimPower = 60 + Math.random() * 30;
+            
+            document.getElementById('angleSlider').value = aimAngle;
+            document.getElementById('angleValue').textContent = aimAngle + '°';
+            document.getElementById('powerSlider').value = aimPower;
+            document.getElementById('powerValue').textContent = aimPower;
+            
+            setTimeout(fire, 500);
+        }
+
+        // Check for winner
+        function checkWinner() {
+            if (castles.player1.health <= 0) {
+                showWinner(2);
+            } else if (castles.player2.health <= 0) {
+                showWinner(1);
+            }
+        }
+
+        // Show winner
+        function showWinner(player) {
+            document.getElementById('winText').textContent = `Player ${player} Wins!`;
+            document.getElementById('winScreen').style.display = 'flex';
+        }
+
+        // Restart game
+        function restartGame() {
+            document.getElementById('winScreen').style.display = 'none';
+            initGame();
+            currentPlayer = 1;
+            document.getElementById('player1').classList.add('active');
+            document.getElementById('player2').classList.remove('active');
+        }
+
+        // Game loop
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw clouds
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.beginPath();
+            ctx.arc(200, 100, 50, 0, Math.PI * 2);
+            ctx.arc(250, 100, 60, 0, Math.PI * 2);
+            ctx.arc(300, 100, 40, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Update and draw castles
+            ['player1', 'player2'].forEach(player => {
+                const castle = castles[player];
+                castle.blocks = castle.blocks.filter(block => {
+                    const keep = block.update();
+                    if (keep) block.draw();
+                    else castle.health -= 5;
+                    return keep;
+                });
+            });
+            
+            // Update projectile
+            if (projectile && projectileActive) {
+                if (!projectile.update()) {
+                    projectileActive = false;
+                    projectile = null;
+                    switchTurn();
+                } else {
+                    projectile.draw();
+                    
+                    // Check collisions
+                    const targetCastle = currentPlayer === 1 ? castles.player2 : castles.player1;
+                    if (projectile.checkCollisions(targetCastle.blocks)) {
+                        projectileActive = false;
+                        projectile = null;
+                        updateHealthDisplay();
+                        checkWinner();
+                        setTimeout(switchTurn, 1000);
+                    }
+                    
+                    // Ground collision
+                    if (projectile.y > canvas.height - 100) {
+                        createExplosion(projectile.x, projectile.y);
+                        projectileActive = false;
+                        projectile = null;
+                        switchTurn();
+                    }
+                }
+            }
+            
+            // Draw trajectory
+            drawTrajectory();
+            
+            animationId = requestAnimationFrame(gameLoop);
+        }
+
+        // Event listeners
+        document.getElementById('fireBtn').addEventListener('click', fire);
+        
+        document.getElementById('powerSlider').addEventListener('input', (e) => {
+            aimPower = parseInt(e.target.value);
+            document.getElementById('powerValue').textContent = aimPower;
+        });
+        
+        document.getElementById('angleSlider').addEventListener('input', (e) => {
+            aimAngle = parseInt(e.target.value);
+            document.getElementById('angleValue').textContent = aimAngle + '°';
+        });
+        
+        window.addEventListener('resize', resizeCanvas);
+
+        // Initialize and start game
+        initGame();
+        gameLoop();
+    </script>
+</body>
+</html>
