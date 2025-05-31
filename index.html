@@ -40,6 +40,10 @@
         body.theme-sunset {
             background: linear-gradient(135deg, #ff6b6b, #ee5a24, #feca57);
         }
+        
+        body.theme-galaxy {
+            background: radial-gradient(ellipse at center, #1a0033 0%, #000000 25%, #330066 50%, #000000 75%, #660099 100%);
+        }
 
         .stars {
             position: fixed;
@@ -91,6 +95,12 @@
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
             margin-bottom: 10px;
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .game-info {
@@ -564,6 +574,10 @@
             background: linear-gradient(135deg, #ff6b6b, #feca57);
         }
 
+        .theme-btn.galaxy {
+            background: radial-gradient(ellipse at center, #7b2cbf 0%, #3a0ca3 30%, #161a1d 100%);
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 3rem;
@@ -598,6 +612,7 @@
                 <button class="theme-btn cyber" onclick="setTheme('cyber')" title="Cyber"></button>
                 <button class="theme-btn ocean" onclick="setTheme('ocean')" title="Ocean"></button>
                 <button class="theme-btn sunset" onclick="setTheme('sunset')" title="Sunset"></button>
+                <button class="theme-btn galaxy" onclick="setTheme('galaxy')" title="Galaxy"></button>
             </div>
         </div>
     </div>
