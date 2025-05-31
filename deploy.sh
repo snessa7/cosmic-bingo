@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 🚀 Cosmic Bingo Auto-Deploy Script
-# Automatically pushes changes to GitHub
+# Automatically pushes to GitHub → Netlify deploys automatically!
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -47,10 +47,14 @@ echo -e "${GREEN}✅ Pushing to GitHub...${NC}"
 git push origin master
 
 # Success message
-echo -e "${GREEN}🎉 Successfully deployed!${NC}"
-echo -e "${BLUE}📱 Game is live at: https://ornate-duckanoo-41fe58.netlify.app${NC}"
+echo -e "${GREEN}🎉 Successfully deployed to GitHub!${NC}"
+echo -e "${BLUE}⚡ Netlify will auto-deploy in ~1-2 minutes${NC}"
+echo -e "${BLUE}📱 Game updates at: https://ornate-duckanoo-41fe58.netlify.app${NC}"
 echo ""
-echo -e "${YELLOW}💡 To update on Netlify:${NC}"
-echo "1. Go to https://app.netlify.com/drop"
-echo "2. Drag this folder onto the page"
-echo "3. Your game updates instantly!"
+echo -e "${YELLOW}🔄 Auto-Deploy Pipeline:${NC}"
+echo "1. Code pushed to GitHub ✅"
+echo "2. Netlify detects changes (automatic)"
+echo "3. Site rebuilds & deploys (1-2 mins)"
+echo ""
+echo -e "${GREEN}Check deploy status at:${NC}"
+echo "https://app.netlify.com/sites/ornate-duckanoo-41fe58/deploys"
