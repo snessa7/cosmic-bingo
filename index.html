@@ -167,6 +167,18 @@
             background: linear-gradient(135deg, #505285 0%, #585989 100%);
         }
 
+        .game-thumbnail.pong {
+            background: linear-gradient(135deg, #00d2ff 0%, #3a47d5 100%);
+        }
+
+        .game-thumbnail.bowling {
+            background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%);
+        }
+
+        .game-thumbnail.suggestions {
+            background: linear-gradient(135deg, #7028e4 0%, #e5b2ca 100%);
+        }
+
         .game-title {
             font-size: 1.8rem;
             font-weight: bold;
@@ -295,24 +307,85 @@
                 Play against friends or AI in epic physics-based combat.
             </p>
             <div class="game-badges">
-                <span class="badge new">NEW!</span>
                 <span class="badge pvp">PvP</span>
                 <span class="badge">Physics</span>
             </div>
         </a>
 
-        <!-- Coming Soon -->
-        <div class="game-card" style="opacity: 0.7; cursor: not-allowed;">
-            <div class="game-thumbnail coming-soon">
-                🎲
+        <!-- Super Pong -->
+        <a href="games/super-pong/" class="game-card">
+            <div class="game-thumbnail pong">
+                🏓
             </div>
-            <h2 class="game-title">More Games Coming Soon!</h2>
+            <h2 class="game-title">Super Pong</h2>
             <p class="game-description">
-                We're working on more awesome games. Check back soon for new additions 
-                to the Galaxy Games collection!
+                Classic Pong reimagined with power-ups, AI difficulties, and amazing effects! 
+                Speed boosts, multi-ball madness, and more!
             </p>
             <div class="game-badges">
-                <span class="badge">Coming Soon</span>
+                <span class="badge new">NEW!</span>
+                <span class="badge">Power-ups</span>
+                <span class="badge">3 Difficulties</span>
+            </div>
+        </a>
+
+        <!-- Cosmic Bowling -->
+        <a href="games/cosmic-bowling/" class="game-card">
+            <div class="game-thumbnail bowling">
+                🎳
+            </div>
+            <h2 class="game-title">Cosmic Bowling</h2>
+            <p class="game-description">
+                Bowl in space with stunning physics! Control power, angle, and position 
+                to knock down pins in this cosmic bowling experience.
+            </p>
+            <div class="game-badges">
+                <span class="badge new">NEW!</span>
+                <span class="badge">Physics</span>
+                <span class="badge">10 Frames</span>
+            </div>
+        </a>
+
+        <!-- Game Suggestions -->
+        <div class="game-card" id="suggestionsCard">
+            <div class="game-thumbnail suggestions">
+                💡
+            </div>
+            <h2 class="game-title">Suggest a Game!</h2>
+            <p class="game-description">
+                Have an idea for the next awesome game? We'd love to hear it! 
+                Share your creative game ideas with us.
+            </p>
+            <form id="suggestionForm" style="margin-top: 20px;" onsubmit="handleSuggestion(event)">
+                <input type="text" 
+                       id="gameIdea" 
+                       placeholder="Enter your game idea..." 
+                       style="width: 100%; 
+                              padding: 10px; 
+                              border-radius: 10px; 
+                              border: 2px solid rgba(255,255,255,0.2); 
+                              background: rgba(255,255,255,0.1); 
+                              color: white; 
+                              font-size: 1rem;
+                              margin-bottom: 10px;"
+                       required>
+                <button type="submit" 
+                        style="width: 100%; 
+                               padding: 10px 20px; 
+                               border-radius: 10px; 
+                               border: none; 
+                               background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%); 
+                               color: #0a0a0a; 
+                               font-weight: bold; 
+                               font-size: 1rem; 
+                               cursor: pointer;
+                               transition: transform 0.2s;">
+                    Submit Idea ✨
+                </button>
+            </form>
+            <div id="suggestionThankYou" style="display: none; margin-top: 20px; text-align: center;">
+                <p style="color: #00ff88; font-size: 1.2rem;">Thank you! 🎮</p>
+                <p style="margin-top: 10px;">Your idea has been saved!</p>
             </div>
         </div>
     </main>
@@ -338,6 +411,36 @@
         // Add hover sound effect (optional)
         function playHoverSound() {
             // Add sound effects here if desired
+        }
+
+        // Handle suggestion form
+        function handleSuggestion(event) {
+            event.preventDefault();
+            
+            const gameIdea = document.getElementById('gameIdea').value;
+            const form = document.getElementById('suggestionForm');
+            const thankYou = document.getElementById('suggestionThankYou');
+            
+            // Save to localStorage (in real app, send to server)
+            const suggestions = JSON.parse(localStorage.getItem('gameSuggestions') || '[]');
+            suggestions.push({
+                idea: gameIdea,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('gameSuggestions', JSON.stringify(suggestions));
+            
+            // Show thank you message
+            form.style.display = 'none';
+            thankYou.style.display = 'block';
+            
+            // Reset after 3 seconds
+            setTimeout(() => {
+                form.style.display = 'block';
+                thankYou.style.display = 'none';
+                document.getElementById('gameIdea').value = '';
+            }, 3000);
+            
+            console.log('Game suggestions:', suggestions);
         }
 
         // Initialize
