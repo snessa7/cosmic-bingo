@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Minesweeper - Galaxy Games</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            touch-action: none;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+        /* Starfield Background */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Game Container */
+        #game-container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            font-weight: 900;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            margin-bottom: 10px;
+        }
+
+        /* Game Info Panel */
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            border-radius: 15px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .info-label {
+            font-size: 0.9em;
+            color: #00ffff;
+        }
+
+        .info-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 1em;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Game Board */
+        #game-board {
+            display: grid;
+            gap: 2px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid rgba(0, 255, 255, 0.5);
+            border-radius: 15px;
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .cell {
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.2), rgba(0, 0, 0, 0.8));
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.2em;
+            overflow: hidden;
+        }
+
+        .cell:hover:not(.revealed):not(.flagged) {
+            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.4), rgba(0, 0, 0, 0.6));
+            transform: translateZ(5px) scale(1.1);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+        }
+
+        .cell.revealed {
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.9));
+            cursor: default;
+            animation: revealCell 0.5s ease-out;
+        }
+
+        @keyframes revealCell {
+            0% {
+                transform: rotateY(180deg) scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: rotateY(90deg) scale(1.2);
+            }
+            100% {
+                transform: rotateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .cell.mine {
+            background: radial-gradient(circle at center, #ff0000, #000);
+            animation: explode 0.5s ease-out;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); filter: brightness(2); }
+            100% { transform: scale(1); }
+        }
+
+        .cell.flagged {
+            background: radial-gradient(circle at center, rgba(255, 255, 0, 0.3), rgba(0, 0, 0, 0.8));
+        }
+
+        .cell.flagged::after {
+            content: '🚩';
+            font-size: 1.2em;
+            animation: plantFlag 0.3s ease-out;
+        }
+
+        @keyframes plantFlag {
+            0% { transform: scale(0) rotate(0); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        /* Number Colors */
+        .cell.num-1 { color: #00ffff; text-shadow: 0 0 10px #00ffff; }
+        .cell.num-2 { color: #00ff00; text-shadow: 0 0 10px #00ff00; }
+        .cell.num-3 { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
+        .cell.num-4 { color: #ffff00; text-shadow: 0 0 10px #ffff00; }
+        .cell.num-5 { color: #ff8800; text-shadow: 0 0 10px #ff8800; }
+        .cell.num-6 { color: #ff0088; text-shadow: 0 0 10px #ff0088; }
+        .cell.num-7 { color: #8800ff; text-shadow: 0 0 10px #8800ff; }
+        .cell.num-8 { color: #ff0000; text-shadow: 0 0 10px #ff0000; }
+
+        /* Power-ups Panel */
+        .powerups-panel {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .powerup {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle at center, rgba(255, 255, 0, 0.2), rgba(0, 0, 0, 0.8));
+            border: 2px solid rgba(255, 255, 0, 0.5);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .powerup:hover:not(.disabled) {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.6);
+        }
+
+        .powerup.active {
+            background: radial-gradient(circle at center, rgba(255, 255, 0, 0.5), rgba(0, 0, 0, 0.8));
+            animation: pulse 1s infinite;
+        }
+
+        .powerup.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .powerup-icon {
+            font-size: 1.5em;
+        }
+
+        .powerup-count {
+            font-size: 0.8em;
+            color: #ffff00;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 50, 100, 0.9));
+            border: 3px solid rgba(0, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Difficulty Selector */
+        .difficulty-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .difficulty-btn {
+            padding: 20px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .difficulty-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .difficulty-name {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #00ffff;
+            margin-bottom: 5px;
+        }
+
+        .difficulty-info {
+            font-size: 0.9em;
+            color: #ccc;
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        .leaderboard-entry:nth-child(1) {
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.2), transparent);
+        }
+
+        .leaderboard-entry:nth-child(2) {
+            background: linear-gradient(90deg, rgba(192, 192, 192, 0.2), transparent);
+        }
+
+        .leaderboard-entry:nth-child(3) {
+            background: linear-gradient(90deg, rgba(205, 127, 50, 0.2), transparent);
+        }
+
+        /* Particle Effects */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle 1s ease-out forwards;
+        }
+
+        @keyframes particle {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Help Panel */
+        .help-content {
+            text-align: left;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .help-section {
+            margin-bottom: 20px;
+        }
+
+        .help-section h3 {
+            color: #00ffff;
+            margin-bottom: 10px;
+        }
+
+        .help-section p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        /* Achievements */
+        .achievement-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 100, 0, 0.9));
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 20px;
+            min-width: 300px;
+            transform: translateX(400px);
+            transition: transform 0.5s;
+            z-index: 2000;
+        }
+
+        .achievement-notification.show {
+            transform: translateX(0);
+        }
+
+        .achievement-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .achievement-title {
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .achievement-desc {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .cell {
+                width: 28px;
+                height: 28px;
+                font-size: 1em;
+            }
+
+            .control-panel {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .powerups-panel {
+                justify-content: center;
+            }
+
+            .powerup {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        /* Loading Screen */
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .loading-text {
+            font-size: 2em;
+            color: #00ffff;
+            animation: loadingPulse 1s infinite;
+        }
+
+        @keyframes loadingPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            border-radius: 5px;
+        }
+
+        /* Zoom Controls */
+        .zoom-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .zoom-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            border-radius: 50%;
+            color: #00ffff;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .zoom-btn:hover {
+            background: rgba(0, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+        /* Game Board Container for panning */
+        #board-container {
+            overflow: auto;
+            max-width: 100%;
+            max-height: 60vh;
+            position: relative;
+            touch-action: pan-x pan-y;
+        }
+
+        /* Victory/Defeat Animation */
+        .game-over-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent, rgba(0, 0, 0, 0.8));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s;
+            z-index: 100;
+        }
+
+        .game-over-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .game-over-text {
+            font-size: 4em;
+            font-weight: 900;
+            text-transform: uppercase;
+            animation: gameOverText 1s ease-out;
+        }
+
+        .victory-text {
+            background: linear-gradient(45deg, #ffd700, #ffff00, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 50px rgba(255, 215, 0, 0.8);
+        }
+
+        .defeat-text {
+            background: linear-gradient(45deg, #ff0000, #ff4444, #ff0000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 50px rgba(255, 0, 0, 0.8);
+        }
+
+        @keyframes gameOverText {
+            0% { transform: scale(0) rotate(180deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+        /* Back button styles */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: translateX(-5px);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .back-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .back-button:hover .back-icon {
+            transform: translateX(-3px);
+        }
+
+        .back-text {
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .back-button {
+                padding: 8px 16px;
+                top: 10px;
+                left: 10px;
+            }
+            
+            .back-text {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Galaxy Games Button -->
+    <a href="../../" class="back-button" aria-label="Back to Galaxy Games">
+        <span class="back-icon">←</span>
+        <span class="back-text">Galaxy Games</span>
+    </a>
+    <!-- Loading Screen -->
+    <div id="loading">
+        <div class="loading-text">Initializing Cosmic Field...</div>
+    </div>
+
+    <!-- Starfield Background -->
+    <div id="starfield"></div>
+
+    <!-- Main Game Container -->
+    <div id="game-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>COSMIC MINESWEEPER</h1>
+            <p style="color: #00ffff;">Navigate the cosmic minefield!</p>
+        </div>
+
+        <!-- Game Info Panel -->
+        <div class="game-info">
+            <div class="info-item">
+                <span class="info-label">MINES</span>
+                <span class="info-value" id="mine-count">10</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">TIME</span>
+                <span class="info-value" id="timer">000</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">FLAGS</span>
+                <span class="info-value" id="flag-count">10</span>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <button class="btn" id="new-game-btn">NEW GAME</button>
+            <button class="btn" id="difficulty-btn">DIFFICULTY</button>
+            <button class="btn" id="pause-btn">PAUSE</button>
+            <button class="btn" id="help-btn">HELP</button>
+            <button class="btn" id="leaderboard-btn">LEADERBOARD</button>
+            <button class="btn" id="sound-btn">SOUND: ON</button>
+        </div>
+
+        <!-- Power-ups Panel -->
+        <div class="powerups-panel">
+            <div class="powerup" id="scanner-powerup" title="Scanner: Reveals numbers around selected cell">
+                <span class="powerup-icon">📡</span>
+                <span class="powerup-count">3</span>
+            </div>
+            <div class="powerup" id="safe-click-powerup" title="Safe Click: Reveals a safe cell">
+                <span class="powerup-icon">🛡️</span>
+                <span class="powerup-count">2</span>
+            </div>
+            <div class="powerup" id="area-clear-powerup" title="Area Clear: Reveals 3x3 safe area">
+                <span class="powerup-icon">💥</span>
+                <span class="powerup-count">1</span>
+            </div>
+            <div class="powerup" id="lucky-star-powerup" title="Lucky Star: Auto-flags obvious mines">
+                <span class="powerup-icon">⭐</span>
+                <span class="powerup-count">1</span>
+            </div>
+            <div class="powerup" id="undo-powerup" title="Undo: Revert last move">
+                <span class="powerup-icon">↩️</span>
+                <span class="powerup-count">3</span>
+            </div>
+        </div>
+
+        <!-- Game Board Container -->
+        <div id="board-container">
+            <div id="game-board">
+                <div class="game-over-overlay" id="game-over-overlay">
+                    <div class="game-over-text" id="game-over-text"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zoom Controls -->
+        <div class="zoom-controls">
+            <button class="zoom-btn" id="zoom-in">+</button>
+            <button class="zoom-btn" id="zoom-out">-</button>
+            <button class="zoom-btn" id="zoom-reset">⟲</button>
+        </div>
+    </div>
+
+    <!-- Difficulty Modal -->
+    <div class="modal" id="difficulty-modal">
+        <div class="modal-content">
+            <h2>SELECT DIFFICULTY</h2>
+            <div class="difficulty-grid">
+                <div class="difficulty-btn" data-difficulty="beginner">
+                    <div class="difficulty-name">BEGINNER</div>
+                    <div class="difficulty-info">9x9 • 10 mines</div>
+                </div>
+                <div class="difficulty-btn" data-difficulty="intermediate">
+                    <div class="difficulty-name">INTERMEDIATE</div>
+                    <div class="difficulty-info">16x16 • 40 mines</div>
+                </div>
+                <div class="difficulty-btn" data-difficulty="expert">
+                    <div class="difficulty-name">EXPERT</div>
+                    <div class="difficulty-info">30x16 • 99 mines</div>
+                </div>
+                <div class="difficulty-btn" data-difficulty="custom">
+                    <div class="difficulty-name">CUSTOM</div>
+                    <div class="difficulty-info">Choose your own</div>
+                </div>
+            </div>
+            <button class="btn" onclick="closeModal('difficulty-modal')">CLOSE</button>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal" id="help-modal">
+        <div class="modal-content">
+            <h2>HOW TO PLAY</h2>
+            <div class="help-content">
+                <div class="help-section">
+                    <h3>Objective</h3>
+                    <p>Clear the cosmic field by revealing all cells that don't contain mines. Use logic and deduction to identify mine locations!</p>
+                </div>
+                <div class="help-section">
+                    <h3>Controls</h3>
+                    <p><strong>Desktop:</strong><br>
+                    • Left Click: Reveal cell<br>
+                    • Right Click: Place/remove flag<br>
+                    • Middle Click: Quick reveal (if numbers match flags)</p>
+                    <p><strong>Mobile:</strong><br>
+                    • Tap: Reveal cell<br>
+                    • Long Press: Place/remove flag<br>
+                    • Pinch: Zoom in/out</p>
+                </div>
+                <div class="help-section">
+                    <h3>Numbers</h3>
+                    <p>Each number indicates how many mines are in the 8 adjacent cells. Use this information to deduce mine locations!</p>
+                </div>
+                <div class="help-section">
+                    <h3>Power-ups</h3>
+                    <p><strong>📡 Scanner:</strong> Reveals numbers in a 3x3 area<br>
+                    <strong>🛡️ Safe Click:</strong> Reveals one guaranteed safe cell<br>
+                    <strong>💥 Area Clear:</strong> Clears a 3x3 safe area<br>
+                    <strong>⭐ Lucky Star:</strong> Auto-flags obvious mines<br>
+                    <strong>↩️ Undo:</strong> Revert your last move</p>
+                </div>
+                <div class="help-section">
+                    <h3>Tips</h3>
+                    <p>• Your first click is always safe<br>
+                    • Start with corners and edges<br>
+                    • Look for patterns in the numbers<br>
+                    • Use flags to mark suspected mines<br>
+                    • Save power-ups for difficult situations</p>
+                </div>
+            </div>
+            <button class="btn" onclick="closeModal('help-modal')">CLOSE</button>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div class="modal" id="leaderboard-modal">
+        <div class="modal-content">
+            <h2>LEADERBOARD</h2>
+            <div class="leaderboard" id="leaderboard-content">
+                <!-- Leaderboard entries will be added here -->
+            </div>
+            <button class="btn" onclick="closeModal('leaderboard-modal')">CLOSE</button>
+        </div>
+    </div>
+
+    <!-- Victory Modal -->
+    <div class="modal" id="victory-modal">
+        <div class="modal-content">
+            <h2>VICTORY!</h2>
+            <p style="font-size: 1.5em; color: #ffd700; margin: 20px 0;">🎉 Cosmic field cleared! 🎉</p>
+            <p style="font-size: 1.2em; margin-bottom: 10px;">Time: <span id="victory-time" style="color: #00ffff;">000</span> seconds</p>
+            <p style="font-size: 1em; color: #ccc; margin-bottom: 20px;">Difficulty: <span id="victory-difficulty">Beginner</span></p>
+            <div id="new-record" style="display: none; margin: 20px 0;">
+                <p style="font-size: 1.3em; color: #ffd700;">🏆 NEW RECORD! 🏆</p>
+            </div>
+            <button class="btn" onclick="newGame()">PLAY AGAIN</button>
+            <button class="btn" onclick="closeModal('victory-modal')">CLOSE</button>
+        </div>
+    </div>
+
+    <!-- Achievement Notification -->
+    <div class="achievement-notification" id="achievement-notification">
+        <div class="achievement-icon" id="achievement-icon">🏆</div>
+        <div class="achievement-title" id="achievement-title">Achievement Unlocked!</div>
+        <div class="achievement-desc" id="achievement-desc">Description</div>
+    </div>
+
+    <script>
+        // Game Configuration
+        const DIFFICULTIES = {
+            beginner: { width: 9, height: 9, mines: 10 },
+            intermediate: { width: 16, height: 16, mines: 40 },
+            expert: { width: 30, height: 16, mines: 99 },
+            custom: { width: 20, height: 20, mines: 60 }
+        };
+
+        // Game State
+        let gameState = {
+            board: [],
+            revealed: [],
+            flagged: [],
+            mines: [],
+            width: 9,
+            height: 9,
+            mineCount: 10,
+            firstClick: true,
+            gameOver: false,
+            victory: false,
+            timer: 0,
+            timerInterval: null,
+            isPaused: false,
+            difficulty: 'beginner',
+            powerups: {
+                scanner: 3,
+                safeClick: 2,
+                areaClear: 1,
+                luckyStar: 1,
+                undo: 3
+            },
+            activePowerup: null,
+            moveHistory: [],
+            soundEnabled: true,
+            currentZoom: 1
+        };
+
+        // Audio Context
+        let audioContext;
+        let sounds = {};
+
+        // Initialize Audio
+        function initAudio() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Create sound effects
+            sounds.reveal = createSound(200, 0.1, 'sine');
+            sounds.flag = createSound(400, 0.1, 'square');
+            sounds.explosion = createSound(100, 0.3, 'sawtooth');
+            sounds.victory = createSound(800, 0.5, 'triangle');
+            sounds.powerup = createSound(600, 0.2, 'sine');
+            sounds.click = createSound(300, 0.05, 'square');
+        }
+
+        // Create sound effect
+        function createSound(frequency, duration, type) {
+            return () => {
+                if (!gameState.soundEnabled) return;
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = frequency;
+                oscillator.type = type;
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration);
+            };
+        }
+
+        // Play background music
+        function playBackgroundMusic() {
+            if (!gameState.soundEnabled) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            const lfo = audioContext.createOscillator();
+            const lfoGain = audioContext.createGain();
+            
+            lfo.connect(lfoGain);
+            lfoGain.connect(oscillator.frequency);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 100;
+            oscillator.type = 'sine';
+            
+            lfo.frequency.value = 0.5;
+            lfo.type = 'sine';
+            lfoGain.gain.value = 20;
+            
+            gainNode.gain.value = 0.05;
+            
+            oscillator.start();
+            lfo.start();
+            
+            return { oscillator, lfo };
+        }
+
+        // Initialize Starfield
+        function createStarfield() {
+            const starfield = document.getElementById('starfield');
+            starfield.innerHTML = '';
+            
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starfield.appendChild(star);
+            }
+        }
+
+        // Initialize Game
+        function initGame() {
+            const diff = DIFFICULTIES[gameState.difficulty];
+            gameState.width = diff.width;
+            gameState.height = diff.height;
+            gameState.mineCount = diff.mines;
+            
+            // Initialize board arrays
+            gameState.board = Array(gameState.height).fill(null).map(() => Array(gameState.width).fill(0));
+            gameState.revealed = Array(gameState.height).fill(null).map(() => Array(gameState.width).fill(false));
+            gameState.flagged = Array(gameState.height).fill(null).map(() => Array(gameState.width).fill(false));
+            gameState.mines = [];
+            
+            // Reset game state
+            gameState.firstClick = true;
+            gameState.gameOver = false;
+            gameState.victory = false;
+            gameState.timer = 0;
+            gameState.moveHistory = [];
+            
+            // Update UI
+            updateDisplay();
+            createBoard();
+            
+            // Hide game over overlay
+            const overlay = document.getElementById('game-over-overlay');
+            overlay.classList.remove('show');
+        }
+
+        // Create game board UI
+        function createBoard() {
+            const boardElement = document.getElementById('game-board');
+            boardElement.innerHTML = '<div class="game-over-overlay" id="game-over-overlay"><div class="game-over-text" id="game-over-text"></div></div>';
+            boardElement.style.gridTemplateColumns = `repeat(${gameState.width}, 35px)`;
+            
+            for (let y = 0; y < gameState.height; y++) {
+                for (let x = 0; x < gameState.width; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.x = x;
+                    cell.dataset.y = y;
+                    cell.addEventListener('click', handleCellClick);
+                    cell.addEventListener('contextmenu', handleRightClick);
+                    cell.addEventListener('touchstart', handleTouchStart);
+                    cell.addEventListener('touchend', handleTouchEnd);
+                    boardElement.appendChild(cell);
+                }
+            }
+        }
+
+        // Place mines on board
+        function placeMines(excludeX, excludeY) {
+            const positions = [];
+            for (let y = 0; y < gameState.height; y++) {
+                for (let x = 0; x < gameState.width; x++) {
+                    if (x !== excludeX || y !== excludeY) {
+                        positions.push({ x, y });
+                    }
+                }
+            }
+            
+            // Shuffle and pick mine positions
+            for (let i = positions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [positions[i], positions[j]] = [positions[j], positions[i]];
+            }
+            
+            gameState.mines = positions.slice(0, gameState.mineCount);
+            
+            // Place mines on board
+            gameState.mines.forEach(({ x, y }) => {
+                gameState.board[y][x] = -1;
+            });
+            
+            // Calculate numbers
+            for (let y = 0; y < gameState.height; y++) {
+                for (let x = 0; x < gameState.width; x++) {
+                    if (gameState.board[y][x] !== -1) {
+                        let count = 0;
+                        for (let dy = -1; dy <= 1; dy++) {
+                            for (let dx = -1; dx <= 1; dx++) {
+                                if (dx === 0 && dy === 0) continue;
+                                const ny = y + dy;
+                                const nx = x + dx;
+                                if (ny >= 0 && ny < gameState.height && nx >= 0 && nx < gameState.width) {
+                                    if (gameState.board[ny][nx] === -1) count++;
+                                }
+                            }
+                        }
+                        gameState.board[y][x] = count;
+                    }
+                }
+            }
+        }
+
+        // Handle cell click
+        function handleCellClick(e) {
+            if (gameState.gameOver || gameState.isPaused) return;
+            
+            const x = parseInt(e.target.dataset.x);
+            const y = parseInt(e.target.dataset.y);
+            
+            if (gameState.flagged[y][x]) return;
+            
+            // Handle active powerup
+            if (gameState.activePowerup) {
+                handlePowerupClick(x, y);
+                return;
+            }
+            
+            // First click setup
+            if (gameState.firstClick) {
+                gameState.firstClick = false;
+                placeMines(x, y);
+                startTimer();
+            }
+            
+            // Save move for undo
+            saveMove();
+            
+            // Reveal cell
+            revealCell(x, y);
+            
+            sounds.click();
+        }
+
+        // Handle right click (flag)
+        function handleRightClick(e) {
+            e.preventDefault();
+            if (gameState.gameOver || gameState.isPaused) return;
+            
+            const x = parseInt(e.target.dataset.x);
+            const y = parseInt(e.target.dataset.y);
+            
+            if (gameState.revealed[y][x]) return;
+            
+            // Save move for undo
+            saveMove();
+            
+            // Toggle flag
+            gameState.flagged[y][x] = !gameState.flagged[y][x];
+            updateCell(x, y);
+            updateDisplay();
+            
+            sounds.flag();
+        }
+
+        // Touch handling
+        let touchTimer;
+        let touchX, touchY;
+
+        function handleTouchStart(e) {
+            const touch = e.touches[0];
+            touchX = parseInt(e.target.dataset.x);
+            touchY = parseInt(e.target.dataset.y);
+            
+            touchTimer = setTimeout(() => {
+                handleRightClick({ preventDefault: () => {}, target: e.target });
+            }, 500);
+        }
+
+        function handleTouchEnd(e) {
+            clearTimeout(touchTimer);
+        }
+
+        // Reveal cell
+        function revealCell(x, y) {
+            if (x < 0 || x >= gameState.width || y < 0 || y >= gameState.height) return;
+            if (gameState.revealed[y][x] || gameState.flagged[y][x]) return;
+            
+            gameState.revealed[y][x] = true;
+            
+            const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+            cell.classList.add('revealed');
+            
+            // Create reveal animation
+            createRevealEffect(cell);
+            
+            if (gameState.board[y][x] === -1) {
+                // Hit a mine
+                cell.classList.add('mine');
+                cell.textContent = '💥';
+                gameOver(false);
+                sounds.explosion();
+            } else {
+                if (gameState.board[y][x] > 0) {
+                    cell.textContent = gameState.board[y][x];
+                    cell.classList.add(`num-${gameState.board[y][x]}`);
+                } else {
+                    // Cascade reveal for empty cells
+                    for (let dy = -1; dy <= 1; dy++) {
+                        for (let dx = -1; dx <= 1; dx++) {
+                            if (dx === 0 && dy === 0) continue;
+                            revealCell(x + dx, y + dy);
+                        }
+                    }
+                }
+                sounds.reveal();
+                
+                // Check for victory
+                checkVictory();
+            }
+        }
+
+        // Create reveal effect
+        function createRevealEffect(cell) {
+            const rect = cell.getBoundingClientRect();
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = rect.left + rect.width / 2 + 'px';
+                particle.style.top = rect.top + rect.height / 2 + 'px';
+                particle.style.setProperty('--tx', (Math.random() - 0.5) * 100 + 'px');
+                particle.style.setProperty('--ty', (Math.random() - 0.5) * 100 + 'px');
+                particle.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+
+        // Update cell display
+        function updateCell(x, y) {
+            const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+            if (gameState.flagged[y][x]) {
+                cell.classList.add('flagged');
+            } else {
+                cell.classList.remove('flagged');
+            }
+        }
+
+        // Check for victory
+        function checkVictory() {
+            let revealedCount = 0;
+            for (let y = 0; y < gameState.height; y++) {
+                for (let x = 0; x < gameState.width; x++) {
+                    if (gameState.revealed[y][x]) revealedCount++;
+                }
+            }
+            
+            if (revealedCount === gameState.width * gameState.height - gameState.mineCount) {
+                gameOver(true);
+            }
+        }
+
+        // Game over
+        function gameOver(victory) {
+            gameState.gameOver = true;
+            gameState.victory = victory;
+            stopTimer();
+            
+            const overlay = document.getElementById('game-over-overlay');
+            const text = document.getElementById('game-over-text');
+            
+            if (victory) {
+                text.textContent = 'VICTORY!';
+                text.className = 'game-over-text victory-text';
+                sounds.victory();
+                
+                // Check for new record
+                checkNewRecord();
+                
+                // Show victory modal
+                setTimeout(() => {
+                    document.getElementById('victory-time').textContent = gameState.timer;
+                    document.getElementById('victory-difficulty').textContent = gameState.difficulty.charAt(0).toUpperCase() + gameState.difficulty.slice(1);
+                    openModal('victory-modal');
+                }, 1000);
+                
+                // Check achievements
+                checkAchievements();
+            } else {
+                text.textContent = 'GAME OVER';
+                text.className = 'game-over-text defeat-text';
+                
+                // Reveal all mines
+                revealAllMines();
+            }
+            
+            overlay.classList.add('show');
+        }
+
+        // Reveal all mines
+        function revealAllMines() {
+            gameState.mines.forEach(({ x, y }) => {
+                if (!gameState.revealed[y][x]) {
+                    const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+                    cell.classList.add('revealed', 'mine');
+                    cell.textContent = '💣';
+                }
+            });
+        }
+
+        // Timer functions
+        function startTimer() {
+            gameState.timerInterval = setInterval(() => {
+                if (!gameState.isPaused) {
+                    gameState.timer++;
+                    updateDisplay();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+                gameState.timerInterval = null;
+            }
+        }
+
+        // Update display
+        function updateDisplay() {
+            document.getElementById('timer').textContent = String(gameState.timer).padStart(3, '0');
+            document.getElementById('mine-count').textContent = gameState.mineCount;
+            
+            let flagCount = 0;
+            for (let y = 0; y < gameState.height; y++) {
+                for (let x = 0; x < gameState.width; x++) {
+                    if (gameState.flagged[y][x]) flagCount++;
+                }
+            }
+            document.getElementById('flag-count').textContent = gameState.mineCount - flagCount;
+            
+            // Update powerup counts
+            Object.keys(gameState.powerups).forEach(powerup => {
+                const element = document.querySelector(`#${powerup.replace(/([A-Z])/g, '-$1').toLowerCase()}-powerup .powerup-count`);
+                if (element) {
+                    element.textContent = gameState.powerups[powerup];
+                    const powerupElement = element.parentElement;
+                    if (gameState.powerups[powerup] === 0) {
+                        powerupElement.classList.add('disabled');
+                    } else {
+                        powerupElement.classList.remove('disabled');
+                    }
+                }
+            });
+        }
+
+        // Powerup handling
+        function activatePowerup(type) {
+            if (gameState.gameOver || gameState.isPaused) return;
+            if (gameState.powerups[type] === 0) return;
+            
+            if (type === 'undo') {
+                performUndo();
+                return;
+            }
+            
+            if (type === 'luckyStar') {
+                performLuckyStar();
+                return;
+            }
+            
+            gameState.activePowerup = type;
+            document.querySelectorAll('.powerup').forEach(p => p.classList.remove('active'));
+            document.getElementById(`${type.replace(/([A-Z])/g, '-$1').toLowerCase()}-powerup`).classList.add('active');
+            
+            sounds.powerup();
+        }
+
+        function handlePowerupClick(x, y) {
+            const type = gameState.activePowerup;
+            
+            switch (type) {
+                case 'scanner':
+                    performScanner(x, y);
+                    break;
+                case 'safeClick':
+                    performSafeClick();
+                    break;
+                case 'areaClear':
+                    performAreaClear(x, y);
+                    break;
+            }
+            
+            gameState.powerups[type]--;
+            gameState.activePowerup = null;
+            document.querySelectorAll('.powerup').forEach(p => p.classList.remove('active'));
+            updateDisplay();
+        }
+
+        // Scanner powerup
+        function performScanner(cx, cy) {
+            saveMove();
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    const x = cx + dx;
+                    const y = cy + dy;
+                    if (x >= 0 && x < gameState.width && y >= 0 && y < gameState.height) {
+                        if (!gameState.revealed[y][x] && gameState.board[y][x] !== -1) {
+                            revealCell(x, y);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Safe click powerup
+        function performSafeClick() {
+            const safeCells = [];
+            for (let y = 0; y < gameState.height; y++) {
+                for (let x = 0; x < gameState.width; x++) {
+                    if (!gameState.revealed[y][x] && !gameState.flagged[y][x] && gameState.board[y][x] !== -1) {
+                        safeCells.push({ x, y });
+                    }
+                }
+            }
+            
+            if (safeCells.length > 0) {
+                saveMove();
+                const { x, y } = safeCells[Math.floor(Math.random() * safeCells.length)];
+                revealCell(x, y);
+                
+                // Highlight the revealed cell
+                const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+                cell.style.boxShadow = '0 0 30px #00ff00';
+                setTimeout(() => {
+                    cell.style.boxShadow = '';
+                }, 1000);
+            }
+        }
+
+        // Area clear powerup
+        function performAreaClear(cx, cy) {
+            // Check if area is safe
+            let isSafe = true;
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    const x = cx + dx;
+                    const y = cy + dy;
+                    if (x >= 0 && x < gameState.width && y >= 0 && y < gameState.height) {
+                        if (gameState.board[y][x] === -1) {
+                            isSafe = false;
+                            break;
+                        }
+                    }
+                }
+                if (!isSafe) break;
+            }
+            
+            if (isSafe) {
+                saveMove();
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        const x = cx + dx;
+                        const y = cy + dy;
+                        if (x >= 0 && x < gameState.width && y >= 0 && y < gameState.height) {
+                            if (!gameState.revealed[y][x]) {
+                                revealCell(x, y);
+                            }
+                        }
+                    }
+                }
+            } else {
+                // Refund the powerup
+                gameState.powerups.areaClear++;
+                alert('This area contains mines! Choose a different location.');
+            }
+        }
+
+        // Lucky star powerup
+        function performLuckyStar() {
+            saveMove();
+            let flagsPlaced = 0;
+            
+            for (let y = 0; y < gameState.height; y++) {
+                for (let x = 0; x < gameState.width; x++) {
+                    if (gameState.revealed[y][x] && gameState.board[y][x] > 0) {
+                        // Count adjacent unrevealed cells and flags
+                        let unrevealed = 0;
+                        let flags = 0;
+                        const adjacentCells = [];
+                        
+                        for (let dy = -1; dy <= 1; dy++) {
+                            for (let dx = -1; dx <= 1; dx++) {
+                                if (dx === 0 && dy === 0) continue;
+                                const nx = x + dx;
+                                const ny = y + dy;
+                                if (nx >= 0 && nx < gameState.width && ny >= 0 && ny < gameState.height) {
+                                    if (!gameState.revealed[ny][nx]) {
+                                        unrevealed++;
+                                        if (gameState.flagged[ny][nx]) {
+                                            flags++;
+                                        } else {
+                                            adjacentCells.push({ x: nx, y: ny });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // If the number of unrevealed cells equals the number on the cell, flag them all
+                        if (unrevealed === gameState.board[y][x] && flags < gameState.board[y][x]) {
+                            adjacentCells.forEach(({ x: fx, y: fy }) => {
+                                if (!gameState.flagged[fy][fx]) {
+                                    gameState.flagged[fy][fx] = true;
+                                    updateCell(fx, fy);
+                                    flagsPlaced++;
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+            
+            updateDisplay();
+            if (flagsPlaced > 0) {
+                showAchievement('Auto-Flagged!', `Placed ${flagsPlaced} flags automatically!`, '🚩');
+            }
+        }
+
+        // Undo functionality
+        function saveMove() {
+            gameState.moveHistory.push({
+                revealed: gameState.revealed.map(row => [...row]),
+                flagged: gameState.flagged.map(row => [...row]),
+                timer: gameState.timer
+            });
+            
+            // Limit history size
+            if (gameState.moveHistory.length > 10) {
+                gameState.moveHistory.shift();
+            }
+        }
+
+        function performUndo() {
+            if (gameState.moveHistory.length === 0 || gameState.gameOver) return;
+            
+            const lastState = gameState.moveHistory.pop();
+            gameState.revealed = lastState.revealed;
+            gameState.flagged = lastState.flagged;
+            
+            // Update all cells
+            for (let y = 0; y < gameState.height; y++) {
+                for (let x = 0; x < gameState.width; x++) {
+                    const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+                    cell.className = 'cell';
+                    cell.textContent = '';
+                    
+                    if (gameState.revealed[y][x]) {
+                        cell.classList.add('revealed');
+                        if (gameState.board[y][x] > 0) {
+                            cell.textContent = gameState.board[y][x];
+                            cell.classList.add(`num-${gameState.board[y][x]}`);
+                        }
+                    }
+                    
+                    if (gameState.flagged[y][x]) {
+                        cell.classList.add('flagged');
+                    }
+                }
+            }
+            
+            gameState.powerups.undo--;
+            updateDisplay();
+            sounds.powerup();
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // New game
+        function newGame() {
+            stopTimer();
+            closeModal('victory-modal');
+            initGame();
+        }
+
+        // Pause game
+        function togglePause() {
+            gameState.isPaused = !gameState.isPaused;
+            document.getElementById('pause-btn').textContent = gameState.isPaused ? 'RESUME' : 'PAUSE';
+            
+            if (gameState.isPaused) {
+                document.getElementById('game-board').style.filter = 'blur(5px)';
+            } else {
+                document.getElementById('game-board').style.filter = 'none';
+            }
+        }
+
+        // Sound toggle
+        function toggleSound() {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            document.getElementById('sound-btn').textContent = `SOUND: ${gameState.soundEnabled ? 'ON' : 'OFF'}`;
+            localStorage.setItem('soundEnabled', gameState.soundEnabled);
+        }
+
+        // Zoom controls
+        function zoomIn() {
+            gameState.currentZoom = Math.min(gameState.currentZoom + 0.1, 2);
+            updateZoom();
+        }
+
+        function zoomOut() {
+            gameState.currentZoom = Math.max(gameState.currentZoom - 0.1, 0.5);
+            updateZoom();
+        }
+
+        function resetZoom() {
+            gameState.currentZoom = 1;
+            updateZoom();
+        }
+
+        function updateZoom() {
+            document.getElementById('game-board').style.transform = `scale(${gameState.currentZoom})`;
+        }
+
+        // Local storage functions
+        function saveSettings() {
+            localStorage.setItem('cosmicMinesweeper', JSON.stringify({
+                soundEnabled: gameState.soundEnabled,
+                difficulty: gameState.difficulty,
+                powerups: gameState.powerups,
+                achievements: achievements
+            }));
+        }
+
+        function loadSettings() {
+            const saved = localStorage.getItem('cosmicMinesweeper');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                gameState.soundEnabled = settings.soundEnabled ?? true;
+                gameState.difficulty = settings.difficulty ?? 'beginner';
+                if (settings.achievements) {
+                    Object.assign(achievements, settings.achievements);
+                }
+            }
+        }
+
+        // Leaderboard functions
+        function getLeaderboard(difficulty) {
+            const key = `leaderboard_${difficulty}`;
+            const saved = localStorage.getItem(key);
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        function saveLeaderboard(difficulty, time) {
+            const key = `leaderboard_${difficulty}`;
+            const leaderboard = getLeaderboard(difficulty);
+            leaderboard.push({ time, date: new Date().toISOString() });
+            leaderboard.sort((a, b) => a.time - b.time);
+            leaderboard.splice(10); // Keep top 10
+            localStorage.setItem(key, JSON.stringify(leaderboard));
+        }
+
+        function checkNewRecord() {
+            const leaderboard = getLeaderboard(gameState.difficulty);
+            if (leaderboard.length === 0 || gameState.timer < leaderboard[0].time) {
+                document.getElementById('new-record').style.display = 'block';
+            } else {
+                document.getElementById('new-record').style.display = 'none';
+            }
+            saveLeaderboard(gameState.difficulty, gameState.timer);
+        }
+
+        function showLeaderboard() {
+            const content = document.getElementById('leaderboard-content');
+            content.innerHTML = '';
+            
+            ['beginner', 'intermediate', 'expert'].forEach(difficulty => {
+                const section = document.createElement('div');
+                section.innerHTML = `<h3 style="color: #00ffff; margin: 20px 0 10px;">${difficulty.toUpperCase()}</h3>`;
+                
+                const leaderboard = getLeaderboard(difficulty);
+                if (leaderboard.length === 0) {
+                    section.innerHTML += '<p style="color: #666;">No records yet</p>';
+                } else {
+                    leaderboard.slice(0, 5).forEach((entry, index) => {
+                        const entryDiv = document.createElement('div');
+                        entryDiv.className = 'leaderboard-entry';
+                        entryDiv.innerHTML = `
+                            <span>#${index + 1}</span>
+                            <span>${entry.time}s</span>
+                            <span style="color: #666; font-size: 0.8em;">${new Date(entry.date).toLocaleDateString()}</span>
+                        `;
+                        section.appendChild(entryDiv);
+                    });
+                }
+                
+                content.appendChild(section);
+            });
+            
+            openModal('leaderboard-modal');
+        }
+
+        // Achievement system
+        const achievements = {
+            firstWin: { unlocked: false, title: 'First Victory', desc: 'Win your first game', icon: '🏆' },
+            speedDemon: { unlocked: false, title: 'Speed Demon', desc: 'Win in under 60 seconds', icon: '⚡' },
+            perfectGame: { unlocked: false, title: 'Perfect Game', desc: 'Win without using flags', icon: '✨' },
+            powerUser: { unlocked: false, title: 'Power User', desc: 'Use all powerup types in one game', icon: '💪' },
+            expertWin: { unlocked: false, title: 'Expert Sweeper', desc: 'Win on Expert difficulty', icon: '🎖️' }
+        };
+
+        function checkAchievements() {
+            // First win
+            if (!achievements.firstWin.unlocked) {
+                unlockAchievement('firstWin');
+            }
+            
+            // Speed demon
+            if (gameState.timer < 60 && !achievements.speedDemon.unlocked) {
+                unlockAchievement('speedDemon');
+            }
+            
+            // Perfect game (no flags used)
+            let flagsUsed = false;
+            for (let y = 0; y < gameState.height; y++) {
+                for (let x = 0; x < gameState.width; x++) {
+                    if (gameState.flagged[y][x]) {
+                        flagsUsed = true;
+                        break;
+                    }
+                }
+                if (flagsUsed) break;
+            }
+            if (!flagsUsed && !achievements.perfectGame.unlocked) {
+                unlockAchievement('perfectGame');
+            }
+            
+            // Expert win
+            if (gameState.difficulty === 'expert' && !achievements.expertWin.unlocked) {
+                unlockAchievement('expertWin');
+            }
+            
+            saveSettings();
+        }
+
+        function unlockAchievement(id) {
+            achievements[id].unlocked = true;
+            showAchievement(achievements[id].title, achievements[id].desc, achievements[id].icon);
+        }
+
+        function showAchievement(title, desc, icon) {
+            const notification = document.getElementById('achievement-notification');
+            document.getElementById('achievement-icon').textContent = icon;
+            document.getElementById('achievement-title').textContent = title;
+            document.getElementById('achievement-desc').textContent = desc;
+            
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+            
+            sounds.victory();
+        }
+
+        // Event listeners
+        document.getElementById('new-game-btn').addEventListener('click', newGame);
+        document.getElementById('difficulty-btn').addEventListener('click', () => openModal('difficulty-modal'));
+        document.getElementById('pause-btn').addEventListener('click', togglePause);
+        document.getElementById('help-btn').addEventListener('click', () => openModal('help-modal'));
+        document.getElementById('leaderboard-btn').addEventListener('click', showLeaderboard);
+        document.getElementById('sound-btn').addEventListener('click', toggleSound);
+
+        // Difficulty selection
+        document.querySelectorAll('.difficulty-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const difficulty = e.currentTarget.dataset.difficulty;
+                if (difficulty === 'custom') {
+                    // For custom, you could add input fields
+                    const width = prompt('Enter width (5-50):', '20');
+                    const height = prompt('Enter height (5-50):', '20');
+                    const mines = prompt('Enter number of mines:', '60');
+                    
+                    if (width && height && mines) {
+                        DIFFICULTIES.custom = {
+                            width: Math.max(5, Math.min(50, parseInt(width))),
+                            height: Math.max(5, Math.min(50, parseInt(height))),
+                            mines: parseInt(mines)
+                        };
+                    }
+                }
+                gameState.difficulty = difficulty;
+                closeModal('difficulty-modal');
+                newGame();
+            });
+        });
+
+        // Powerup listeners
+        document.getElementById('scanner-powerup').addEventListener('click', () => activatePowerup('scanner'));
+        document.getElementById('safe-click-powerup').addEventListener('click', () => activatePowerup('safeClick'));
+        document.getElementById('area-clear-powerup').addEventListener('click', () => activatePowerup('areaClear'));
+        document.getElementById('lucky-star-powerup').addEventListener('click', () => activatePowerup('luckyStar'));
+        document.getElementById('undo-powerup').addEventListener('click', () => activatePowerup('undo'));
+
+        // Zoom controls
+        document.getElementById('zoom-in').addEventListener('click', zoomIn);
+        document.getElementById('zoom-out').addEventListener('click', zoomOut);
+        document.getElementById('zoom-reset').addEventListener('click', resetZoom);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'n':
+                case 'N':
+                    newGame();
+                    break;
+                case 'p':
+                case 'P':
+                    togglePause();
+                    break;
+                case 'h':
+                case 'H':
+                    openModal('help-modal');
+                    break;
+                case 'Escape':
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        modal.classList.remove('active');
+                    });
+                    break;
+            }
+        });
+
+        // Prevent context menu on game board
+        document.getElementById('game-board').addEventListener('contextmenu', e => e.preventDefault());
+
+        // Initialize
+        window.addEventListener('load', () => {
+            createStarfield();
+            loadSettings();
+            initAudio();
+            initGame();
+            
+            // Update sound button
+            document.getElementById('sound-btn').textContent = `SOUND: ${gameState.soundEnabled ? 'ON' : 'OFF'}`;
+            
+            // Hide loading screen
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+            }, 1000);
+            
+            // Start background music
+            let bgMusic;
+            document.addEventListener('click', () => {
+                if (!bgMusic && gameState.soundEnabled) {
+                    bgMusic = playBackgroundMusic();
+                }
+            }, { once: true });
+        });
+
+        // Save settings on unload
+        window.addEventListener('beforeunload', saveSettings);
+    </script>
+</body>
+</html>

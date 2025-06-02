@@ -19,6 +19,7 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            position: relative;
         }
 
         .header {
@@ -26,6 +27,7 @@
             padding: 20px;
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
+            z-index: 10;
         }
 
         h1 {
@@ -42,6 +44,8 @@
             align-items: center;
             padding: 10px;
             background: rgba(0, 0, 0, 0.3);
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .score-display {
@@ -63,6 +67,9 @@
         #gameCanvas {
             transform-style: preserve-3d;
             transform: rotateX(20deg);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
         }
 
         .controls {
@@ -76,6 +83,7 @@
             padding: 20px;
             border-radius: 20px;
             backdrop-filter: blur(10px);
+            z-index: 20;
         }
 
         .control-group {
@@ -138,6 +146,7 @@
             color: white;
             text-decoration: none;
             transition: all 0.3s ease;
+            z-index: 30;
         }
 
         .back-btn:hover {
@@ -160,6 +169,7 @@
             border-radius: 10px;
             padding: 10px;
             text-align: center;
+            min-height: 60px;
         }
 
         .frame.active {
@@ -167,15 +177,23 @@
             box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
         }
 
+        .frame-number {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+
         .pins-display {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 2rem;
+            font-size: 3rem;
             color: #ffff00;
             text-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
             display: none;
+            font-weight: bold;
+            z-index: 25;
         }
 
         .stars-bg {
@@ -201,12 +219,255 @@
             0%, 100% { opacity: 0; }
             50% { opacity: 1; }
         }
+
+        /* Power-up buttons */
+        .powerups {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .powerup-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .powerup-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .powerup-btn.active {
+            background: linear-gradient(135deg, #00ff00, #00aa00);
+            border-color: #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .powerup-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Settings panel */
+        .settings-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 30;
+        }
+
+        .settings-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a3e, #2a2a4e);
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 {
+            color: #ffff00;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal h3 {
+            color: #ff8800;
+            margin: 15px 0 10px 0;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        /* Touch controls */
+        .touch-indicator {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 3px solid #ffff00;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            background: rgba(255, 255, 0, 0.2);
+        }
+
+        /* Achievement notification */
+        .achievement {
+            position: fixed;
+            top: 100px;
+            right: -400px;
+            background: linear-gradient(135deg, #1a1a3e, #2a2a4e);
+            border: 2px solid #ffff00;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 350px;
+            box-shadow: 0 0 30px rgba(255, 255, 0, 0.5);
+            transition: right 0.5s ease;
+            z-index: 50;
+        }
+
+        .achievement.show {
+            right: 20px;
+        }
+
+        .achievement h3 {
+            color: #ffff00;
+            margin-bottom: 10px;
+        }
+
+        /* High scores */
+        .high-scores {
+            list-style: none;
+            padding: 0;
+        }
+
+        .high-scores li {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 5px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Difficulty settings */
+        .difficulty-group {
+            margin: 20px 0;
+        }
+
+        .difficulty-group label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .difficulty-group select {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                bottom: 10px;
+                padding: 15px;
+                width: 90%;
+            }
+
+            .control-group {
+                width: 100%;
+            }
+
+            .control-group input[type="range"] {
+                width: 100%;
+            }
+
+            .frame-score {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            #gameCanvas {
+                width: 300px;
+                height: 450px;
+            }
+
+            .powerups {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        /* Pause overlay */
+        .pause-overlay {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            color: #ffff00;
+            text-shadow: 0 0 30px rgba(255, 255, 0, 0.8);
+            z-index: 40;
+        }
+
+        /* Particle effect */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffff00;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 15;
+        }
     </style>
 </head>
 <body>
     <div class="stars-bg"></div>
     
     <a href="../../" class="back-btn">← Back to Games</a>
+    
+    <div class="settings-panel">
+        <button class="settings-btn" id="helpBtn">Help</button>
+        <button class="settings-btn" id="settingsBtn">Settings</button>
+        <button class="settings-btn" id="soundBtn">🔊</button>
+    </div>
     
     <header class="header">
         <h1>COSMIC BOWLING</h1>
@@ -220,6 +481,9 @@
             <div class="score-display">
                 Roll: <span id="currentRoll">1</span>
             </div>
+            <div class="score-display">
+                High Score: <span id="highScore">0</span>
+            </div>
         </div>
     </header>
 
@@ -228,6 +492,8 @@
     <div class="game-canvas">
         <canvas id="gameCanvas" width="400" height="600"></canvas>
         <div class="pins-display" id="pinsDisplay"></div>
+        <div class="pause-overlay" id="pauseOverlay">PAUSED</div>
+        <div class="touch-indicator" id="touchIndicator"></div>
         
         <div class="controls">
             <div class="control-group">
@@ -244,553 +510,213 @@
                     <div class="power-fill" id="powerFill"></div>
                 </div>
                 <button class="btn btn-bowl" id="bowlBtn">BOWL!</button>
+                <div class="powerups">
+                    <button class="powerup-btn" id="superBallBtn" title="Super Ball - Extra power">⚡</button>
+                    <button class="powerup-btn" id="splitBallBtn" title="Split Ball - Splits on impact">🎯</button>
+                    <button class="powerup-btn" id="explosiveBallBtn" title="Explosive Ball - Explodes on impact">💥</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        
+    <!-- Help Modal -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('helpModal')">&times;</button>
+            <h2>How to Play Cosmic Bowling</h2>
+            
+            <h3>Basic Controls</h3>
+            <p>• Use the Position slider to move the ball left/right</p>
+            <p>• Use the Angle slider to adjust your throw angle</p>
+            <p>• Hold the BOWL! button to charge power</p>
+            <p>• Release to throw the ball</p>
+            <p>• Press SPACEBAR to pause</p>
+            
+            <h3>Touch Controls</h3>
+            <p>• Swipe left/right to position the ball</p>
+            <p>• Tap and hold to charge power</p>
+            <p>• Release to bowl</p>
+            
+            <h3>Power-ups</h3>
+            <p>⚡ <strong>Super Ball:</strong> Increased power and speed</p>
+            <p>🎯 <strong>Split Ball:</strong> Ball splits into two on first pin contact</p>
+            <p>💥 <strong>Explosive Ball:</strong> Creates an explosion on impact</p>
+            
+            <h3>Scoring</h3>
+            <p>• Strike (X): All pins in one roll = 10 + next 2 rolls</p>
+            <p>• Spare (/): All pins in two rolls = 10 + next 1 roll</p>
+            <p>• 10th frame: Up to 3 rolls if you get strikes/spares</p>
+            
+            <h3>Tips</h3>
+            <p>• Aim for the pocket (between pins 1-3 for right-handers)</p>
+            <p>• Use angle to create pin action</p>
+            <p>• Power-ups recharge after each frame</p>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('settingsModal')">&times;</button>
+            <h2>Settings</h2>
+            
+            <div class="difficulty-group">
+                <label for="difficulty">Difficulty</label>
+                <select id="difficulty">
+                    <option value="easy">Easy - Lighter pins, faster ball</option>
+                    <option value="normal" selected>Normal - Standard physics</option>
+                    <option value="hard">Hard - Heavier pins, slower ball</option>
+                </select>
+            </div>
+            
+            <h3>High Scores</h3>
+            <ol class="high-scores" id="highScoresList"></ol>
+            
+            <h3>Achievements</h3>
+            <div id="achievementsList"></div>
+            
+            <button class="btn" onclick="resetGame()">New Game</button>
+            <button class="btn" onclick="clearData()">Clear All Data</button>
+        </div>
+    </div>
+
+    <!-- Achievement Notification -->
+    <div class="achievement" id="achievementNotification">
+        <h3 id="achievementTitle">Achievement Unlocked!</h3>
+        <p id="achievementDesc">Description</p>
+    </div>
+
+    <script>
         // Game state
-        let currentFrame = 1;
-        let currentRoll = 1;
-        let totalScore = 0;
-        let frameScores = [];
-        let pins = [];
-        let ball = null;
-        let isRolling = false;
-        let power = 0;
-        let powerDirection = 1;
-        let powerInterval = null;
-        
-        // Initialize frame scores
-        for (let i = 0; i < 10; i++) {
-            frameScores.push({ rolls: [], score: 0, total: 0 });
-        }
-        
+        let canvas, ctx;
+        let gameState = {
+            currentFrame: 1,
+            currentRoll: 1,
+            totalScore: 0,
+            frameScores: [],
+            pins: [],
+            ball: null,
+            isRolling: false,
+            isPaused: false,
+            powerUpActive: null,
+            difficulty: 'normal',
+            soundEnabled: true,
+            achievements: {
+                firstStrike: false,
+                turkey: false,
+                perfect: false,
+                split: false,
+                powerMaster: false
+            },
+            consecutiveStrikes: 0,
+            highScores: []
+        };
+
+        // Physics constants
+        const PHYSICS = {
+            easy: { pinWeight: 0.7, ballSpeed: 1.3, friction: 0.98 },
+            normal: { pinWeight: 1.0, ballSpeed: 1.0, friction: 0.985 },
+            hard: { pinWeight: 1.3, ballSpeed: 0.8, friction: 0.99 }
+        };
+
+        // Audio context for sound effects
+        let audioContext;
+        let sounds = {};
+
         // Pin class
         class Pin {
-            constructor(x, y, index) {
+            constructor(x, y, number) {
                 this.x = x;
                 this.y = y;
-                this.index = index;
+                this.number = number;
+                this.radius = 8;
                 this.standing = true;
-                this.falling = false;
+                this.vx = 0;
+                this.vy = 0;
                 this.angle = 0;
-                this.fallDirection = 0;
+                this.angularVelocity = 0;
             }
-            
-            draw() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                
-                if (this.falling) {
-                    ctx.rotate(this.angle);
-                }
-                
-                // Pin body
-                ctx.fillStyle = this.standing ? '#ffffff' : '#888888';
-                ctx.beginPath();
-                ctx.ellipse(0, 0, 8, 12, 0, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Pin stripe
-                ctx.fillStyle = '#ff0000';
-                ctx.fillRect(-8, -4, 16, 3);
-                
-                ctx.restore();
-            }
-            
-            knockDown() {
-                if (!this.standing) return;
-                this.standing = false;
-                this.falling = true;
-                this.fallDirection = Math.random() * Math.PI * 2;
-            }
-            
+
             update() {
-                if (this.falling) {
-                    this.angle += 0.1;
-                    if (this.angle > Math.PI / 2) {
-                        this.falling = false;
+                if (!this.standing) {
+                    const physics = PHYSICS[gameState.difficulty];
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.angle += this.angularVelocity;
+                    
+                    this.vx *= physics.friction;
+                    this.vy *= physics.friction;
+                    this.angularVelocity *= 0.95;
+                    
+                    // Bounds checking
+                    if (this.x < this.radius || this.x > canvas.width - this.radius) {
+                        this.vx *= -0.8;
+                        this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
+                    }
+                    if (this.y < this.radius || this.y > canvas.height - this.radius) {
+                        this.vy *= -0.8;
+                        this.y = Math.max(this.radius, Math.min(canvas.height - this.radius, this.y));
                     }
                 }
             }
-        }
-        
-        // Ball class
-        class Ball {
-            constructor(x, position, angle, power) {
-                this.x = x;
-                this.y = 550;
-                this.radius = 15;
-                this.vx = angle * 0.5;
-                this.vy = -power * 8;
-                this.spinning = true;
-                this.rotation = 0;
-            }
-            
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.rotation += 0.3;
-                
-                // Friction
-                this.vy *= 0.98;
-                this.vx *= 0.99;
-                
-                // Lane boundaries
-                if (this.x < 50 || this.x > 350) {
-                    this.vx *= -0.8;
-                    this.x = Math.max(50, Math.min(350, this.x));
-                }
-                
-                return this.y > -50;
-            }
-            
+
             draw() {
                 ctx.save();
                 ctx.translate(this.x, this.y);
-                ctx.rotate(this.rotation);
+                ctx.rotate(this.angle);
                 
-                // Ball
-                const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.radius);
-                gradient.addColorStop(0, '#ff8800');
-                gradient.addColorStop(0.7, '#ff6600');
-                gradient.addColorStop(1, '#ff4400');
-                
-                ctx.fillStyle = gradient;
-                ctx.beginPath();
-                ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Finger holes
-                ctx.fillStyle = '#000000';
-                ctx.beginPath();
-                ctx.arc(-5, -5, 3, 0, Math.PI * 2);
-                ctx.arc(5, -5, 3, 0, Math.PI * 2);
-                ctx.arc(0, 5, 3, 0, Math.PI * 2);
-                ctx.fill();
-                
-                ctx.restore();
-            }
-            
-            checkPinCollision(pin) {
-                if (!pin.standing) return false;
-                
-                const dx = this.x - pin.x;
-                const dy = this.y - pin.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance < this.radius + 8) {
-                    pin.knockDown();
-                    // Add some physics to the ball
-                    this.vx += dx * 0.1;
-                    this.vy += dy * 0.1;
-                    return true;
-                }
-                return false;
-            }
-        }
-        
-        // Setup pins
-        function setupPins() {
-            pins = [];
-            const startX = 200;
-            const startY = 100;
-            let index = 0;
-            
-            // Standard 10-pin formation
-            for (let row = 0; row < 4; row++) {
-                for (let col = 0; col <= row; col++) {
-                    const x = startX + (col - row / 2) * 30;
-                    const y = startY + row * 35;
-                    pins.push(new Pin(x, y, index++));
-                }
-            }
-        }
-        
-        // Draw lane
-        function drawLane() {
-            // Lane
-            const gradient = ctx.createLinearGradient(200, 0, 200, 600);
-            gradient.addColorStop(0, '#2a2a4a');
-            gradient.addColorStop(0.5, '#3a3a5a');
-            gradient.addColorStop(1, '#2a2a4a');
-            
-            ctx.fillStyle = gradient;
-            ctx.fillRect(50, 0, 300, 600);
-            
-            // Lane markers
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([10, 10]);
-            ctx.beginPath();
-            ctx.moveTo(50, 0);
-            ctx.lineTo(50, 600);
-            ctx.moveTo(350, 0);
-            ctx.lineTo(350, 600);
-            ctx.stroke();
-            ctx.setLineDash([]);
-            
-            // Arrows
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-            for (let i = 0; i < 7; i++) {
-                ctx.beginPath();
-                ctx.moveTo(200, 400 - i * 20);
-                ctx.lineTo(190, 410 - i * 20);
-                ctx.lineTo(210, 410 - i * 20);
-                ctx.closePath();
-                ctx.fill();
-            }
-            
-            // Gutters
-            ctx.fillStyle = '#1a1a2a';
-            ctx.fillRect(0, 0, 50, 600);
-            ctx.fillRect(350, 0, 50, 600);
-        }
-        
-        // Update game display
-        function updateDisplay() {
-            document.getElementById('currentFrame').textContent = currentFrame;
-            document.getElementById('totalScore').textContent = totalScore;
-            document.getElementById('currentRoll').textContent = currentRoll;
-            
-            // Update frame display
-            const frameDisplay = document.getElementById('frameScore');
-            frameDisplay.innerHTML = '';
-            
-            frameScores.forEach((frame, index) => {
-                const frameDiv = document.createElement('div');
-                frameDiv.className = 'frame' + (index + 1 === currentFrame ? ' active' : '');
-                frameDiv.innerHTML = `
-                    <div>Frame ${index + 1}</div>
-                    <div>${frame.rolls.join(' | ') || '-'}</div>
-                    <div>${frame.total || '-'}</div>
-                `;
-                frameDisplay.appendChild(frameDiv);
-            });
-        }
-        
-        // Calculate score
-        function calculateScore() {
-            totalScore = 0;
-            
-            for (let i = 0; i < 10; i++) {
-                const frame = frameScores[i];
-                if (frame.rolls.length === 0) break;
-                
-                let frameScore = 0;
-                const roll1 = frame.rolls[0] || 0;
-                const roll2 = frame.rolls[1] || 0;
-                
-                if (i < 9) { // Regular frames
-                    if (roll1 === 10) { // Strike
-                        frameScore = 10;
-                        const nextFrame = frameScores[i + 1];
-                        if (nextFrame.rolls.length > 0) {
-                            frameScore += nextFrame.rolls[0];
-                            if (nextFrame.rolls[0] === 10 && i < 8) {
-                                // Double strike
-                                const nextNextFrame = frameScores[i + 2];
-                                frameScore += nextNextFrame.rolls[0] || 0;
-                            } else {
-                                frameScore += nextFrame.rolls[1] || 0;
-                            }
-                        }
-                    } else if (roll1 + roll2 === 10) { // Spare
-                        frameScore = 10;
-                        const nextFrame = frameScores[i + 1];
-                        if (nextFrame.rolls.length > 0) {
-                            frameScore += nextFrame.rolls[0];
-                        }
-                    } else {
-                        frameScore = roll1 + roll2;
-                    }
-                } else { // 10th frame
-                    frameScore = frame.rolls.reduce((a, b) => a + b, 0);
-                }
-                
-                totalScore += frameScore;
-                frame.score = frameScore;
-                frame.total = totalScore;
-            }
-            
-            updateDisplay();
-        }
-        
-        // Bowl the ball
-        function bowl() {
-            if (isRolling) return;
-            
-            const position = parseInt(document.getElementById('positionSlider').value);
-            const angle = parseInt(document.getElementById('angleSlider').value);
-            
-            ball = new Ball(200 + position, position, angle, power / 100);
-            isRolling = true;
-            
-            // Stop power meter
-            clearInterval(powerInterval);
-            powerInterval = null;
-            
-            document.getElementById('bowlBtn').disabled = true;
-        }
-        
-        // Count standing pins
-        function countStandingPins() {
-            return pins.filter(pin => pin.standing).length;
-        }
-        
-        // End roll
-        function endRoll() {
-            const pinsKnocked = 10 - countStandingPins();
-            frameScores[currentFrame - 1].rolls.push(pinsKnocked);
-            
-            // Show pins knocked
-            const display = document.getElementById('pinsDisplay');
-            if (pinsKnocked === 10 && currentRoll === 1) {
-                display.textContent = 'STRIKE!';
-            } else if (pinsKnocked + (frameScores[currentFrame - 1].rolls[0] || 0) === 10 && currentRoll === 2) {
-                display.textContent = 'SPARE!';
-            } else {
-                display.textContent = `${pinsKnocked} pins!`;
-            }
-            display.style.display = 'block';
-            
-            setTimeout(() => {
-                display.style.display = 'none';
-                
-                // Check if we need to move to next frame
-                if (currentFrame < 10) {
-                    if (currentRoll === 2 || pinsKnocked === 10) {
-                        currentFrame++;
-                        currentRoll = 1;
-                        setupPins();
-                    } else {
-                        currentRoll++;
-                    }
-                } else { // 10th frame special rules
-                    const rolls = frameScores[9].rolls;
-                    if (rolls.length < 3 && (rolls[0] === 10 || rolls[0] + rolls[1] === 10)) {
-                        currentRoll++;
-                        if (rolls.length === 2 && rolls[1] === 10) {
-                            setupPins();
-                        }
-                    } else if (rolls.length < 2) {
-                        currentRoll++;
-                    } else {
-                        // Game over
-                        endGame();
-                        return;
-                    }
-                }
-                
-                calculateScore();
-                isRolling = false;
-                ball = null;
-                power = 0;
-                document.getElementById('powerFill').style.width = '0%';
-                document.getElementById('bowlBtn').disabled = false;
-            }, 2000);
-        }
-        
-        // End game
-        function endGame() {
-            alert(`Game Over! Final Score: ${totalScore}`);
-            // Reset game
-            currentFrame = 1;
-            currentRoll = 1;
-            totalScore = 0;
-            frameScores = [];
-            for (let i = 0; i < 10; i++) {
-                frameScores.push({ rolls: [], score: 0, total: 0 });
-            }
-            setupPins();
-            updateDisplay();
-            isRolling = false;
-            document.getElementById('bowlBtn').disabled = false;
-        }
-        
-        // Power meter
-        document.getElementById('bowlBtn').addEventListener('mousedown', () => {
-            if (isRolling) return;
-            
-            powerInterval = setInterval(() => {
-                power += powerDirection * 2;
-                if (power >= 100 || power <= 0) {
-                    powerDirection *= -1;
-                }
-                power = Math.max(0, Math.min(100, power));
-                document.getElementById('powerFill').style.width = power + '%';
-            }, 20);
-        });
-        
-        document.getElementById('bowlBtn').addEventListener('mouseup', bowl);
-        document.getElementById('bowlBtn').addEventListener('mouseleave', () => {
-            if (powerInterval) {
-                bowl();
-            }
-        });
-        
-        // Create stars
-        function createStars() {
-            const starsContainer = document.querySelector('.stars-bg');
-            for (let i = 0; i < 100; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 3 + 's';
-                starsContainer.appendChild(star);
-            }
-        }
-        
-        // Game loop
-        function gameLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            drawLane();
-            
-            // Update and draw pins
-            pins.forEach(pin => {
-                pin.update();
-                pin.draw();
-            });
-            
-            // Update and draw ball
-            if (ball) {
-                if (!ball.update()) {
-                    endRoll();
-                } else {
-                    // Check collisions
-                    pins.forEach(pin => {
-                        ball.checkPinCollision(pin);
-                    });
-                    ball.draw();
-                }
-            }
-            
-            requestAnimationFrame(gameLoop);
-        }
-        
-        // Initialize
-        createStars();
-        setupPins();
-        updateDisplay();
-        gameLoop();
-    </script>
-</body>
-</html>        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        // Game state
-        let pins = [];
-        let ball = null;
-        let currentFrame = 1;
-        let currentRoll = 1;
-        let totalScore = 0;
-        let frameScores = [];
-        let isRolling = false;
-        let power = 0;
-        let powerDirection = 1;
-        let powerInterval = null;
-        
-        // Pin class
-        class Pin {
-            constructor(x, y, index) {
-                this.x = x;
-                this.y = y;
-                this.index = index;
-                this.radius = 15;
-                this.standing = true;
-                this.falling = false;
-                this.fallAngle = 0;
-                this.glowIntensity = 0;
-            }
-            
-            draw() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                
-                if (this.falling) {
-                    ctx.rotate(this.fallAngle);
-                    this.fallAngle += 0.1;
-                    if (this.fallAngle > Math.PI / 2) {
-                        this.standing = false;
-                        this.falling = false;
-                    }
-                }
-                
-                if (this.standing || this.falling) {
-                    // Pin body
+                if (this.standing) {
+                    // Standing pin
                     ctx.fillStyle = '#ffffff';
-                    ctx.beginPath();
-                    ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    // Glow effect
-                    this.glowIntensity = Math.sin(Date.now() * 0.003 + this.index) * 0.5 + 0.5;
-                    ctx.shadowBlur = 20 * this.glowIntensity;
-                    ctx.shadowColor = '#ffff00';
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-                    
-                    // Number
-                    ctx.fillStyle = '#000';
-                    ctx.font = 'bold 12px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(this.index + 1, 0, 0);
+                    ctx.fillRect(-this.radius, -this.radius * 2, this.radius * 2, this.radius * 4);
+                    ctx.fillStyle = '#ff0000';
+                    ctx.fillRect(-this.radius, -this.radius * 2, this.radius * 2, this.radius);
+                } else {
+                    // Fallen pin
+                    ctx.fillStyle = '#cccccc';
+                    ctx.fillRect(-this.radius * 2, -this.radius / 2, this.radius * 4, this.radius);
                 }
+                
+                // Pin number
+                ctx.fillStyle = '#000';
+                ctx.font = '10px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(this.number, 0, 0);
                 
                 ctx.restore();
             }
-            
-            checkCollision(ball) {
-                if (!this.standing || this.falling) return false;
-                
-                const dx = ball.x - this.x;
-                const dy = ball.y - this.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance < this.radius + ball.radius) {
-                    this.falling = true;
-                    // Add some physics to the ball
-                    ball.vx *= 0.7;
-                    ball.vy *= 0.7;
-                    return true;
+
+            knockDown(vx, vy) {
+                if (this.standing) {
+                    this.standing = false;
+                    const physics = PHYSICS[gameState.difficulty];
+                    this.vx = vx * physics.pinWeight;
+                    this.vy = vy * physics.pinWeight;
+                    this.angularVelocity = (Math.random() - 0.5) * 0.3;
+                    playSound('pinHit');
                 }
-                return false;
             }
         }
-        
+
         // Ball class
         class Ball {
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
+                this.radius = 12;
                 this.vx = 0;
                 this.vy = 0;
-                this.radius = 12;
+                this.angle = 0;
+                this.power = 0;
                 this.trail = [];
-                this.active = false;
+                this.type = gameState.powerUpActive;
             }
-            
+
             update() {
-                if (!this.active) return;
-                
-                this.x += this.vx;
-                this.y += this.vy;
-                
-                // Friction
-                this.vx *= 0.99;
-                this.vy *= 0.985;
-                
-                // Wall collision
-                if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) {
-                    this.vx = -this.vx * 0.8;
-                    this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
-                }
+                const physics = PHYSICS[gameState.difficulty];
+                this.x += this.vx * physics.ballSpeed;
+                this.y += this.vy * physics.ballSpeed;
+                this.angle += Math.abs(this.vy) * 0.1;
                 
                 // Add to trail
                 this.trail.push({ x: this.x, y: this.y });
@@ -798,21 +724,39 @@
                     this.trail.shift();
                 }
                 
-                // Stop if too slow
-                if (Math.abs(this.vx) < 0.1 && Math.abs(this.vy) < 0.5) {
-                    this.active = false;
-                    endRoll();
+                // Apply friction
+                this.vx *= physics.friction;
+                this.vy *= physics.friction;
+                
+                // Bounds checking
+                if (this.x < this.radius || this.x > canvas.width - this.radius) {
+                    this.vx *= -0.8;
+                    this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
+                    playSound('wallHit');
+                }
+                
+                // Check pin collisions
+                gameState.pins.forEach(pin => {
+                    if (pin.standing && this.checkCollision(pin)) {
+                        this.handlePinCollision(pin);
+                    }
+                });
+                
+                // Check if ball has stopped or gone off screen
+                if (Math.abs(this.vx) < 0.1 && Math.abs(this.vy) < 0.1 || this.y < -50) {
+                    this.onComplete();
                 }
             }
-            
+
             draw() {
                 // Draw trail
-                ctx.strokeStyle = 'rgba(255, 255, 0, 0.3)';
-                ctx.lineWidth = this.radius * 2;
-                ctx.lineCap = 'round';
+                ctx.strokeStyle = this.type === 'super' ? '#ffff00' : 
+                                  this.type === 'split' ? '#00ff00' : 
+                                  this.type === 'explosive' ? '#ff0000' : '#ffffff';
+                ctx.lineWidth = 2;
                 ctx.beginPath();
-                this.trail.forEach((point, index) => {
-                    if (index === 0) {
+                this.trail.forEach((point, i) => {
+                    if (i === 0) {
                         ctx.moveTo(point.x, point.y);
                     } else {
                         ctx.lineTo(point.x, point.y);
@@ -821,310 +765,603 @@
                 ctx.stroke();
                 
                 // Draw ball
-                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
-                gradient.addColorStop(0, '#ffff88');
-                gradient.addColorStop(0.5, '#ffaa00');
-                gradient.addColorStop(1, '#ff6600');
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                
+                // Ball gradient
+                const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.radius);
+                if (this.type === 'super') {
+                    gradient.addColorStop(0, '#ffff00');
+                    gradient.addColorStop(1, '#ff8800');
+                } else if (this.type === 'split') {
+                    gradient.addColorStop(0, '#00ff00');
+                    gradient.addColorStop(1, '#008800');
+                } else if (this.type === 'explosive') {
+                    gradient.addColorStop(0, '#ff0000');
+                    gradient.addColorStop(1, '#880000');
+                } else {
+                    gradient.addColorStop(0, '#4444ff');
+                    gradient.addColorStop(1, '#000088');
+                }
                 
                 ctx.fillStyle = gradient;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Glow
-                ctx.shadowBlur = 30;
-                ctx.shadowColor = '#ffaa00';
+                // Ball shine
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.beginPath();
+                ctx.arc(-this.radius/3, -this.radius/3, this.radius/3, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.shadowBlur = 0;
+                
+                ctx.restore();
             }
-        }
-        
-        // Initialize pins
-        function setupPins() {
-            pins = [];
-            const startX = canvas.width / 2;
-            const startY = 150;
-            const spacing = 35;
-            
-            // Pin layout (standard 10-pin)
-            const layout = [
-                [0, 0],           // Pin 1
-                [-0.5, 1], [0.5, 1],     // Pins 2, 3
-                [-1, 2], [0, 2], [1, 2],  // Pins 4, 5, 6
-                [-1.5, 3], [-0.5, 3], [0.5, 3], [1.5, 3]  // Pins 7, 8, 9, 10
-            ];
-            
-            layout.forEach((pos, index) => {
-                const x = startX + pos[0] * spacing;
-                const y = startY + pos[1] * spacing;
-                pins.push(new Pin(x, y, index));
-            });
-        }
-        
-        // Initialize frame display
-        function setupFrames() {
-            const frameContainer = document.getElementById('frameScore');
-            frameContainer.innerHTML = '';
-            
-            for (let i = 0; i < 10; i++) {
-                const frame = document.createElement('div');
-                frame.className = 'frame';
-                frame.id = `frame${i + 1}`;
-                frame.innerHTML = `
-                    <div>Frame ${i + 1}</div>
-                    <div class="rolls">-</div>
-                    <div class="score">-</div>
-                `;
-                frameContainer.appendChild(frame);
+
+            checkCollision(pin) {
+                const dx = this.x - pin.x;
+                const dy = this.y - pin.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                return distance < this.radius + pin.radius;
             }
-            
-            frameScores = Array(10).fill(null).map(() => ({ rolls: [], score: 0 }));
-        }
-        
-        // Start power meter
-        function startPowerMeter() {
-            power = 0;
-            powerDirection = 1;
-            powerInterval = setInterval(() => {
-                power += powerDirection * 5;
-                if (power >= 100 || power <= 0) {
-                    powerDirection = -powerDirection;
+
+            handlePinCollision(pin) {
+                const dx = pin.x - this.x;
+                const dy = pin.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                // Normalize collision vector
+                const nx = dx / distance;
+                const ny = dy / distance;
+                
+                // Calculate relative velocity
+                const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                
+                // Apply collision
+                pin.knockDown(nx * speed * 0.8, ny * speed * 0.8);
+                
+                // Ball bounce
+                this.vx *= 0.7;
+                this.vy *= 0.7;
+                
+                // Handle power-ups
+                if (this.type === 'explosive' && pin.standing) {
+                    this.explode();
+                } else if (this.type === 'split' && gameState.pins.filter(p => !p.standing).length === 1) {
+                    this.split();
                 }
-                document.getElementById('powerFill').style.width = power + '%';
-            }, 50);
-        }
-        
-        // Stop power meter
-        function stopPowerMeter() {
-            if (powerInterval) {
-                clearInterval(powerInterval);
-                powerInterval = null;
-            }
-        }
-        
-        // Bowl the ball
-        function bowl() {
-            if (isRolling) return;
-            
-            const position = parseInt(document.getElementById('positionSlider').value);
-            const angle = parseInt(document.getElementById('angleSlider').value);
-            
-            stopPowerMeter();
-            
-            ball = new Ball(canvas.width / 2 + position, canvas.height - 50);
-            ball.vx = Math.sin(angle * Math.PI / 180) * (power / 10);
-            ball.vy = -15 - (power / 10);
-            ball.active = true;
-            
-            isRolling = true;
-            document.getElementById('bowlBtn').disabled = true;
-        }
-        
-        // End roll
-        function endRoll() {
-            isRolling = false;
-            
-            // Count knocked pins
-            const knockedPins = pins.filter(pin => !pin.standing).length;
-            const standingPins = pins.filter(pin => pin.standing).length;
-            
-            // Show knocked pins
-            if (knockedPins > 0) {
-                const display = document.getElementById('pinsDisplay');
-                display.textContent = knockedPins === 10 ? 'STRIKE!' : 
-                                    (currentRoll === 2 && standingPins === 0) ? 'SPARE!' : 
-                                    `${knockedPins} pins!`;
-                display.style.display = 'block';
-                setTimeout(() => {
-                    display.style.display = 'none';
-                }, 2000);
-            }
-            
-            // Update frame score
-            const frameIndex = currentFrame - 1;
-            frameScores[frameIndex].rolls.push(knockedPins);
-            
-            // Update display
-            updateFrameDisplay();
-            
-            // Check if frame is complete
-            if (currentRoll === 1 && knockedPins === 10) {
-                // Strike - frame complete
-                nextFrame();
-            } else if (currentRoll === 2) {
-                // Second roll - frame complete
-                nextFrame();
-            } else {
-                // First roll, not a strike
-                currentRoll = 2;
-                document.getElementById('currentRoll').textContent = currentRoll;
                 
-                // Remove knocked pins
-                pins = pins.filter(pin => pin.standing);
-                
-                // Reset ball position
-                setTimeout(() => {
-                    ball = null;
-                    document.getElementById('bowlBtn').disabled = false;
-                    startPowerMeter();
-                }, 1000);
-            }
-        }
-        
-        // Move to next frame
-        function nextFrame() {
-            currentFrame++;
-            currentRoll = 1;
-            
-            if (currentFrame > 10) {
-                // Game over
-                endGame();
-            } else {
-                document.getElementById('currentFrame').textContent = currentFrame;
-                document.getElementById('currentRoll').textContent = currentRoll;
-                
-                // Reset pins
-                setupPins();
-                
-                // Update active frame highlight
-                document.querySelectorAll('.frame').forEach(f => f.classList.remove('active'));
-                document.getElementById(`frame${currentFrame}`).classList.add('active');
-                
-                // Reset for next roll
-                setTimeout(() => {
-                    ball = null;
-                    document.getElementById('bowlBtn').disabled = false;
-                    startPowerMeter();
-                }, 1500);
-            }
-        }
-        
-        // Update frame display
-        function updateFrameDisplay() {
-            const frameIndex = currentFrame - 1;
-            const frame = document.getElementById(`frame${currentFrame}`);
-            const rolls = frameScores[frameIndex].rolls;
-            
-            let rollsText = rolls.map((r, i) => {
-                if (i === 0 && r === 10) return 'X';
-                if (i === 1 && rolls[0] + r === 10) return '/';
-                return r.toString();
-            }).join(' ');
-            
-            frame.querySelector('.rolls').textContent = rollsText;
-            
-            // Calculate total score
-            calculateTotalScore();
-        }
-        
-        // Calculate total score
-        function calculateTotalScore() {
-            let total = 0;
-            
-            for (let i = 0; i < frameScores.length; i++) {
-                const frame = frameScores[i];
-                if (frame.rolls.length === 0) break;
-                
-                let frameScore = frame.rolls.reduce((a, b) => a + b, 0);
-                
-                // Strike bonus
-                if (frame.rolls[0] === 10 && i < 9) {
-                    const nextFrame = frameScores[i + 1];
-                    if (nextFrame.rolls.length > 0) {
-                        frameScore += nextFrame.rolls[0];
-                        if (nextFrame.rolls.length > 1) {
-                            frameScore += nextFrame.rolls[1];
-                        } else if (nextFrame.rolls[0] === 10 && i < 8) {
-                            const nextNextFrame = frameScores[i + 2];
-                            if (nextNextFrame.rolls.length > 0) {
-                                frameScore += nextNextFrame.rolls[0];
-                            }
+                // Chain reaction - knocked pins can knock other pins
+                gameState.pins.forEach(otherPin => {
+                    if (otherPin !== pin && otherPin.standing) {
+                        const dx2 = otherPin.x - pin.x;
+                        const dy2 = otherPin.y - pin.y;
+                        const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+                        
+                        if (dist2 < pin.radius * 3) {
+                            const force = (pin.radius * 3 - dist2) / (pin.radius * 3);
+                            otherPin.knockDown(dx2 / dist2 * force * 5, dy2 / dist2 * force * 5);
                         }
                     }
-                }
-                // Spare bonus
-                else if (frame.rolls.length === 2 && frame.rolls[0] + frame.rolls[1] === 10 && i < 9) {
-                    const nextFrame = frameScores[i + 1];
-                    if (nextFrame.rolls.length > 0) {
-                        frameScore += nextFrame.rolls[0];
+                });
+            }
+
+            explode() {
+                // Create explosion effect
+                createParticles(this.x, this.y, 20, '#ff0000');
+                playSound('explosion');
+                
+                // Knock down nearby pins
+                gameState.pins.forEach(pin => {
+                    if (pin.standing) {
+                        const dx = pin.x - this.x;
+                        const dy = pin.y - this.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 100) {
+                            const force = (100 - distance) / 100;
+                            pin.knockDown(dx / distance * force * 10, dy / distance * force * 10);
+                        }
                     }
+                });
+            }
+
+            split() {
+                // Create a second ball
+                const newBall = new Ball(this.x + 20, this.y);
+                newBall.vx = this.vx + 2;
+                newBall.vy = this.vy;
+                newBall.type = null; // Prevent infinite splits
+                // Note: In a real implementation, you'd need to handle multiple balls
+            }
+
+            onComplete() {
+                gameState.isRolling = false;
+                updateScore();
+                
+                // Reset power-up
+                if (gameState.powerUpActive) {
+                    document.getElementById(gameState.powerUpActive + 'BallBtn').classList.remove('active');
+                    gameState.powerUpActive = null;
                 }
                 
-                total += frameScore;
-                frame.score = total;
-                document.querySelector(`#frame${i + 1} .score`).textContent = total;
+                // Check for next roll
+                if (gameState.currentRoll === 1 && gameState.pins.filter(p => p.standing).length > 0) {
+                    gameState.currentRoll = 2;
+                    updateUI();
+                    // Remove fallen pins for second roll
+                    gameState.pins = gameState.pins.filter(p => p.standing);
+                } else {
+                    nextFrame();
+                }
+            }
+        }
+
+        // Initialize game
+        function init() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Initialize audio
+            initAudio();
+            
+            // Create stars background
+            createStars();
+            
+            // Initialize frame scores
+            for (let i = 0; i < 10; i++) {
+                gameState.frameScores.push({ rolls: [], total: null });
             }
             
-            totalScore = total;
-            document.getElementById('totalScore').textContent = total;
-        }
-        
-        // End game
-        function endGame() {
-            const display = document.getElementById('pinsDisplay');
-            display.innerHTML = `
-                <h2>Game Over!</h2>
-                <p>Final Score: ${totalScore}</p>
-                <button class="btn btn-primary" onclick="resetGame()">Play Again</button>
-            `;
-            display.style.display = 'block';
-        }
-        
-        // Reset game
-        function resetGame() {
-            currentFrame = 1;
-            currentRoll = 1;
-            totalScore = 0;
-            document.getElementById('currentFrame').textContent = currentFrame;
-            document.getElementById('currentRoll').textContent = currentRoll;
-            document.getElementById('totalScore').textContent = totalScore;
-            document.getElementById('pinsDisplay').style.display = 'none';
-            
-            setupFrames();
+            // Setup pins
             setupPins();
-            ball = null;
             
-            document.getElementById('bowlBtn').disabled = false;
-            startPowerMeter();
+            // Setup controls
+            setupControls();
             
-            document.getElementById(`frame1`).classList.add('active');
+            // Load saved data
+            loadGameData();
+            
+            // Update UI
+            updateUI();
+            updateFrameDisplay();
+            
+            // Start game loop
+            gameLoop();
         }
-        
+
+        // Setup pins in triangle formation
+        function setupPins() {
+            gameState.pins = [];
+            const startX = canvas.width / 2;
+            const startY = 100;
+            const spacing = 25;
+            let pinNumber = 1;
+            
+            for (let row = 0; row < 4; row++) {
+                for (let col = 0; col <= row; col++) {
+                    const x = startX + (col - row/2) * spacing;
+                    const y = startY + row * spacing;
+                    gameState.pins.push(new Pin(x, y, pinNumber++));
+                }
+            }
+        }
+
         // Game loop
         function gameLoop() {
-            // Clear canvas
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw lane
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(50, 0);
-            ctx.lineTo(50, canvas.height);
-            ctx.moveTo(canvas.width - 50, 0);
-            ctx.lineTo(canvas.width - 50, canvas.height);
-            ctx.stroke();
-            
-            // Draw pins
-            pins.forEach(pin => pin.draw());
-            
-            // Update and draw ball
-            if (ball) {
-                ball.update();
-                ball.draw();
+            if (!gameState.isPaused) {
+                // Clear canvas
+                ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                // Check collisions
-                pins.forEach(pin => pin.checkCollision(ball));
+                // Draw lane
+                ctx.fillStyle = '#1a1a2e';
+                ctx.fillRect(50, 0, canvas.width - 100, canvas.height);
+                
+                // Draw lane markers
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(50, 0);
+                ctx.lineTo(50, canvas.height);
+                ctx.moveTo(canvas.width - 50, 0);
+                ctx.lineTo(canvas.width - 50, canvas.height);
+                ctx.stroke();
+                
+                // Update and draw pins
+                gameState.pins.forEach(pin => {
+                    pin.update();
+                    pin.draw();
+                });
+                
+                // Update and draw ball
+                if (gameState.ball) {
+                    gameState.ball.update();
+                    gameState.ball.draw();
+                }
+                
+                // Update particles
+                updateParticles();
             }
             
             requestAnimationFrame(gameLoop);
         }
-        
-        // Event listeners
-        document.getElementById('bowlBtn').addEventListener('click', bowl);
-        
-        // Create starry background
+
+        // Setup controls
+        function setupControls() {
+            const bowlBtn = document.getElementById('bowlBtn');
+            const positionSlider = document.getElementById('positionSlider');
+            const angleSlider = document.getElementById('angleSlider');
+            let powerInterval;
+            
+            // Bowl button
+            bowlBtn.addEventListener('mousedown', startPowerCharge);
+            bowlBtn.addEventListener('mouseup', releaseBall);
+            bowlBtn.addEventListener('mouseleave', releaseBall);
+            bowlBtn.addEventListener('touchstart', startPowerCharge);
+            bowlBtn.addEventListener('touchend', releaseBall);
+            
+            function startPowerCharge(e) {
+                e.preventDefault();
+                if (gameState.isRolling || gameState.isPaused) return;
+                
+                playSound('charge');
+                let power = 0;
+                powerInterval = setInterval(() => {
+                    power = Math.min(power + 2, 100);
+                    document.getElementById('powerFill').style.width = power + '%';
+                    gameState.ball = new Ball(
+                        canvas.width / 2 + parseInt(positionSlider.value),
+                        canvas.height - 50
+                    );
+                    gameState.ball.power = power;
+                }, 50);
+            }
+            
+            function releaseBall(e) {
+                e.preventDefault();
+                if (powerInterval) {
+                    clearInterval(powerInterval);
+                    powerInterval = null;
+                    
+                    if (gameState.ball && gameState.ball.power > 0) {
+                        const angle = parseInt(angleSlider.value) * Math.PI / 180;
+                        const power = gameState.ball.power / 100;
+                        
+                        gameState.ball.vx = Math.sin(angle) * power * 5;
+                        gameState.ball.vy = -Math.cos(angle) * power * 15;
+                        
+                        if (gameState.powerUpActive === 'super') {
+                            gameState.ball.vy *= 1.5;
+                        }
+                        
+                        gameState.isRolling = true;
+                        bowlBtn.disabled = true;
+                        playSound('roll');
+                    }
+                    
+                    document.getElementById('powerFill').style.width = '0%';
+                }
+            }
+            
+            // Power-up buttons
+            document.getElementById('superBallBtn').addEventListener('click', () => {
+                togglePowerUp('super');
+            });
+            
+            document.getElementById('splitBallBtn').addEventListener('click', () => {
+                togglePowerUp('split');
+            });
+            
+            document.getElementById('explosiveBallBtn').addEventListener('click', () => {
+                togglePowerUp('explosive');
+            });
+            
+            // Settings buttons
+            document.getElementById('helpBtn').addEventListener('click', () => {
+                showModal('helpModal');
+            });
+            
+            document.getElementById('settingsBtn').addEventListener('click', () => {
+                showModal('settingsModal');
+                updateHighScoresList();
+                updateAchievementsList();
+            });
+            
+            document.getElementById('soundBtn').addEventListener('click', () => {
+                gameState.soundEnabled = !gameState.soundEnabled;
+                document.getElementById('soundBtn').textContent = gameState.soundEnabled ? '🔊' : '🔇';
+            });
+            
+            // Difficulty selector
+            document.getElementById('difficulty').addEventListener('change', (e) => {
+                gameState.difficulty = e.target.value;
+                localStorage.setItem('cosmicBowlingDifficulty', gameState.difficulty);
+            });
+            
+            // Keyboard controls
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    togglePause();
+                }
+            });
+            
+            // Touch controls for mobile
+            setupTouchControls();
+        }
+
+        // Setup touch controls
+        function setupTouchControls() {
+            let touchStartX = 0;
+            let touchStartY = 0;
+            
+            canvas.addEventListener('touchstart', (e) => {
+                if (gameState.isRolling || gameState.isPaused) return;
+                
+                const touch = e.touches[0];
+                touchStartX = touch.clientX;
+                touchStartY = touch.clientY;
+                
+                const indicator = document.getElementById('touchIndicator');
+                indicator.style.left = touch.clientX - 30 + 'px';
+                indicator.style.top = touch.clientY - 30 + 'px';
+                indicator.style.opacity = '1';
+            });
+            
+            canvas.addEventListener('touchmove', (e) => {
+                if (gameState.isRolling || gameState.isPaused) return;
+                
+                const touch = e.touches[0];
+                const deltaX = touch.clientX - touchStartX;
+                
+                // Update position slider based on swipe
+                const positionSlider = document.getElementById('positionSlider');
+                const newValue = Math.max(-150, Math.min(150, deltaX));
+                positionSlider.value = newValue;
+                
+                const indicator = document.getElementById('touchIndicator');
+                indicator.style.left = touch.clientX - 30 + 'px';
+                indicator.style.top = touch.clientY - 30 + 'px';
+            });
+            
+            canvas.addEventListener('touchend', () => {
+                const indicator = document.getElementById('touchIndicator');
+                indicator.style.opacity = '0';
+            });
+        }
+
+        // Toggle power-up
+        function togglePowerUp(type) {
+            if (gameState.isRolling || gameState.isPaused) return;
+            
+            // Deactivate all power-ups
+            document.querySelectorAll('.powerup-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Toggle selected power-up
+            if (gameState.powerUpActive === type) {
+                gameState.powerUpActive = null;
+            } else {
+                gameState.powerUpActive = type;
+                document.getElementById(type + 'BallBtn').classList.add('active');
+                playSound('powerUp');
+            }
+        }
+
+        // Update score
+        function updateScore() {
+            const frameIndex = gameState.currentFrame - 1;
+            const frame = gameState.frameScores[frameIndex];
+            const pinsDown = 10 - gameState.pins.filter(p => p.standing).length;
+            
+            frame.rolls.push(pinsDown);
+            
+            // Check for strike
+            if (gameState.currentRoll === 1 && pinsDown === 10) {
+                showPinsDisplay('STRIKE!');
+                playSound('strike');
+                gameState.consecutiveStrikes++;
+                
+                // Check achievements
+                if (!gameState.achievements.firstStrike) {
+                    unlockAchievement('firstStrike', 'First Strike', 'Get your first strike!');
+                }
+                if (gameState.consecutiveStrikes === 3 && !gameState.achievements.turkey) {
+                    unlockAchievement('turkey', 'Turkey!', 'Get three strikes in a row!');
+                }
+            }
+            // Check for spare
+            else if (gameState.currentRoll === 2 && 
+                     frame.rolls[0] + frame.rolls[1] === 10) {
+                showPinsDisplay('SPARE!');
+                playSound('spare');
+                gameState.consecutiveStrikes = 0;
+            } else {
+                gameState.consecutiveStrikes = 0;
+                if (pinsDown === 0) {
+                    playSound('gutter');
+                }
+            }
+            
+            calculateFrameScores();
+            updateUI();
+        }
+
+        // Calculate frame scores
+        function calculateFrameScores() {
+            let total = 0;
+            
+            for (let i = 0; i < gameState.frameScores.length; i++) {
+                const frame = gameState.frameScores[i];
+                if (frame.rolls.length === 0) break;
+                
+                // 10th frame special handling
+                if (i === 9) {
+                    frame.total = frame.rolls.reduce((sum, roll) => sum + roll, 0);
+                }
+                // Strike
+                else if (frame.rolls[0] === 10) {
+                    const nextFrame = gameState.frameScores[i + 1];
+                    if (nextFrame && nextFrame.rolls.length > 0) {
+                        frame.total = 10 + nextFrame.rolls[0];
+                        if (nextFrame.rolls[0] === 10 && i < 8) {
+                            const nextNextFrame = gameState.frameScores[i + 2];
+                            if (nextNextFrame && nextNextFrame.rolls.length > 0) {
+                                frame.total += nextNextFrame.rolls[0];
+                            }
+                        } else if (nextFrame.rolls.length > 1) {
+                            frame.total += nextFrame.rolls[1];
+                        }
+                    }
+                }
+                // Spare
+                else if (frame.rolls.length === 2 && frame.rolls[0] + frame.rolls[1] === 10) {
+                    const nextFrame = gameState.frameScores[i + 1];
+                    if (nextFrame && nextFrame.rolls.length > 0) {
+                        frame.total = 10 + nextFrame.rolls[0];
+                    }
+                }
+                // Normal frame
+                else if (frame.rolls.length === 2) {
+                    frame.total = frame.rolls[0] + frame.rolls[1];
+                }
+                
+                if (frame.total !== null) {
+                    total += frame.total;
+                }
+            }
+            
+            gameState.totalScore = total;
+        }
+
+        // Next frame
+        function nextFrame() {
+            if (gameState.currentFrame < 10) {
+                gameState.currentFrame++;
+                gameState.currentRoll = 1;
+                setupPins();
+                updateUI();
+                updateFrameDisplay();
+                document.getElementById('bowlBtn').disabled = false;
+                
+                // Enable power-ups for new frame
+                document.querySelectorAll('.powerup-btn').forEach(btn => {
+                    btn.disabled = false;
+                });
+            } else {
+                // Game over
+                endGame();
+            }
+        }
+
+        // End game
+        function endGame() {
+            showPinsDisplay(`GAME OVER! Score: ${gameState.totalScore}`);
+            
+            // Check for perfect game
+            if (gameState.totalScore === 300 && !gameState.achievements.perfect) {
+                unlockAchievement('perfect', 'Perfect Game!', 'Score 300 points!');
+            }
+            
+            // Save high score
+            saveHighScore(gameState.totalScore);
+            
+            // Show final score and options
+            setTimeout(() => {
+                if (confirm(`Game Over! Final Score: ${gameState.totalScore}\n\nPlay again?`)) {
+                    resetGame();
+                }
+            }, 2000);
+        }
+
+        // Reset game
+        function resetGame() {
+            gameState.currentFrame = 1;
+            gameState.currentRoll = 1;
+            gameState.totalScore = 0;
+            gameState.frameScores = [];
+            gameState.consecutiveStrikes = 0;
+            
+            for (let i = 0; i < 10; i++) {
+                gameState.frameScores.push({ rolls: [], total: null });
+            }
+            
+            setupPins();
+            updateUI();
+            updateFrameDisplay();
+            document.getElementById('bowlBtn').disabled = false;
+        }
+
+        // Update UI
+        function updateUI() {
+            document.getElementById('currentFrame').textContent = gameState.currentFrame;
+            document.getElementById('currentRoll').textContent = gameState.currentRoll;
+            document.getElementById('totalScore').textContent = gameState.totalScore;
+            document.getElementById('highScore').textContent = 
+                gameState.highScores.length > 0 ? Math.max(...gameState.highScores) : 0;
+        }
+
+        // Update frame display
+        function updateFrameDisplay() {
+            const container = document.getElementById('frameScore');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 10; i++) {
+                const frame = gameState.frameScores[i];
+                const frameDiv = document.createElement('div');
+                frameDiv.className = 'frame';
+                if (i === gameState.currentFrame - 1) {
+                    frameDiv.classList.add('active');
+                }
+                
+                frameDiv.innerHTML = `
+                    <div class="frame-number">Frame ${i + 1}</div>
+                    <div>${formatFrameScore(frame, i)}</div>
+                    <div>${frame.total !== null ? frame.total : '-'}</div>
+                `;
+                
+                container.appendChild(frameDiv);
+            }
+        }
+
+        // Format frame score display
+        function formatFrameScore(frame, frameIndex) {
+            if (frame.rolls.length === 0) return '-';
+            
+            if (frameIndex === 9) {
+                // 10th frame special display
+                return frame.rolls.map((roll, i) => {
+                    if (i === 0 && roll === 10) return 'X';
+                    if (i === 1 && frame.rolls[0] + roll === 10) return '/';
+                    if (i === 1 && roll === 10) return 'X';
+                    if (i === 2 && roll === 10) return 'X';
+                    if (i === 2 && frame.rolls[1] + roll === 10) return '/';
+                    return roll;
+                }).join(' ');
+            } else {
+                if (frame.rolls[0] === 10) return 'X';
+                if (frame.rolls.length === 2 && frame.rolls[0] + frame.rolls[1] === 10) {
+                    return `${frame.rolls[0]} /`;
+                }
+                return frame.rolls.join(' ');
+            }
+        }
+
+        // Show pins display
+        function showPinsDisplay(text) {
+            const display = document.getElementById('pinsDisplay');
+            display.textContent = text;
+            display.style.display = 'block';
+            
+            setTimeout(() => {
+                display.style.display = 'none';
+            }, 2000);
+        }
+
+        // Create stars background
         function createStars() {
             const starsContainer = document.querySelector('.stars-bg');
             for (let i = 0; i < 100; i++) {
@@ -1136,15 +1373,230 @@
                 starsContainer.appendChild(star);
             }
         }
+
+        // Particle system
+        let particles = [];
+
+        function createParticles(x, y, count, color) {
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.PI * 2 * i) / count;
+                const speed = 2 + Math.random() * 3;
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    life: 1,
+                    color: color
+                });
+            }
+        }
+
+        function updateParticles() {
+            particles = particles.filter(particle => {
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.life -= 0.02;
+                particle.vy += 0.1; // gravity
+                
+                if (particle.life > 0) {
+                    ctx.fillStyle = particle.color;
+                    ctx.globalAlpha = particle.life;
+                    ctx.fillRect(particle.x - 2, particle.y - 2, 4, 4);
+                    ctx.globalAlpha = 1;
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        // Audio system
+        function initAudio() {
+            if (window.AudioContext || window.webkitAudioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Create basic sound effects
+                sounds = {
+                    roll: () => createTone(200, 0.5, 'sine'),
+                    pinHit: () => createTone(800, 0.1, 'square'),
+                    strike: () => createTone(1000, 0.3, 'triangle'),
+                    spare: () => createTone(600, 0.3, 'triangle'),
+                    gutter: () => createTone(100, 0.5, 'sawtooth'),
+                    wallHit: () => createTone(300, 0.1, 'square'),
+                    charge: () => createTone(400, 0.1, 'sine'),
+                    powerUp: () => createTone(1200, 0.2, 'sine'),
+                    explosion: () => createNoise(0.3)
+                };
+            }
+        }
+
+        function createTone(frequency, duration, type) {
+            if (!audioContext || !gameState.soundEnabled) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = type;
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+
+        function createNoise(duration) {
+            if (!audioContext || !gameState.soundEnabled) return;
+            
+            const bufferSize = audioContext.sampleRate * duration;
+            const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+            const output = buffer.getChannelData(0);
+            
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+            
+            const whiteNoise = audioContext.createBufferSource();
+            whiteNoise.buffer = buffer;
+            
+            const gainNode = audioContext.createGain();
+            whiteNoise.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            whiteNoise.start(audioContext.currentTime);
+        }
+
+        function playSound(name) {
+            if (sounds[name]) {
+                sounds[name]();
+            }
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Toggle pause
+        function togglePause() {
+            gameState.isPaused = !gameState.isPaused;
+            document.getElementById('pauseOverlay').style.display = 
+                gameState.isPaused ? 'block' : 'none';
+        }
+
+        // Local storage functions
+        function loadGameData() {
+            const savedHighScores = localStorage.getItem('cosmicBowlingHighScores');
+            if (savedHighScores) {
+                gameState.highScores = JSON.parse(savedHighScores);
+            }
+            
+            const savedAchievements = localStorage.getItem('cosmicBowlingAchievements');
+            if (savedAchievements) {
+                gameState.achievements = JSON.parse(savedAchievements);
+            }
+            
+            const savedDifficulty = localStorage.getItem('cosmicBowlingDifficulty');
+            if (savedDifficulty) {
+                gameState.difficulty = savedDifficulty;
+                document.getElementById('difficulty').value = savedDifficulty;
+            }
+        }
+
+        function saveHighScore(score) {
+            gameState.highScores.push(score);
+            gameState.highScores.sort((a, b) => b - a);
+            gameState.highScores = gameState.highScores.slice(0, 10); // Keep top 10
+            localStorage.setItem('cosmicBowlingHighScores', JSON.stringify(gameState.highScores));
+        }
+
+        function updateHighScoresList() {
+            const list = document.getElementById('highScoresList');
+            list.innerHTML = '';
+            
+            gameState.highScores.forEach((score, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>#${index + 1}</span><span>${score}</span>`;
+                list.appendChild(li);
+            });
+        }
+
+        // Achievement system
+        function unlockAchievement(id, title, description) {
+            if (gameState.achievements[id]) return;
+            
+            gameState.achievements[id] = true;
+            localStorage.setItem('cosmicBowlingAchievements', JSON.stringify(gameState.achievements));
+            
+            // Show notification
+            const notification = document.getElementById('achievementNotification');
+            document.getElementById('achievementTitle').textContent = title;
+            document.getElementById('achievementDesc').textContent = description;
+            
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+            
+            playSound('powerUp');
+        }
+
+        function updateAchievementsList() {
+            const list = document.getElementById('achievementsList');
+            list.innerHTML = '';
+            
+            const achievements = [
+                { id: 'firstStrike', name: 'First Strike', desc: 'Get your first strike!' },
+                { id: 'turkey', name: 'Turkey!', desc: 'Get three strikes in a row!' },
+                { id: 'perfect', name: 'Perfect Game!', desc: 'Score 300 points!' },
+                { id: 'split', name: 'Split Master', desc: 'Convert a difficult split!' },
+                { id: 'powerMaster', name: 'Power Master', desc: 'Use all power-ups in one game!' }
+            ];
+            
+            achievements.forEach(achievement => {
+                const div = document.createElement('div');
+                div.style.padding = '10px';
+                div.style.background = gameState.achievements[achievement.id] ? 
+                    'rgba(0, 255, 0, 0.2)' : 'rgba(255, 255, 255, 0.1)';
+                div.style.marginBottom = '5px';
+                div.style.borderRadius = '5px';
+                div.innerHTML = `
+                    <strong>${achievement.name}</strong><br>
+                    <small>${achievement.desc}</small>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function clearData() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                localStorage.removeItem('cosmicBowlingHighScores');
+                localStorage.removeItem('cosmicBowlingAchievements');
+                localStorage.removeItem('cosmicBowlingDifficulty');
+                location.reload();
+            }
+        }
+
+        // Start the game
+        window.addEventListener('load', init);
         
-        // Initialize game
-        createStars();
-        setupFrames();
-        setupPins();
-        startPowerMeter();
-        gameLoop();
-        
-        document.getElementById(`frame1`).classList.add('active');
+        // Handle window close for modal
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

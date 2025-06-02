@@ -4,6 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galaxy Games - Play Free Online Games</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Play amazing free online games at Galaxy Games! Enjoy Cosmic Bingo, Castle Siege, Super Pong, and more. Fun multiplayer games with stunning visuals and power-ups.">
+    <meta name="keywords" content="free online games, multiplayer games, browser games, cosmic bingo, castle siege, super pong, cosmic bowling, tetris, snake game, minesweeper">
+    <meta name="author" content="Galaxy Games">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cosmic-bingo.netlify.app/">
+    <meta property="og:title" content="Galaxy Games - Play Free Online Games">
+    <meta property="og:description" content="Play amazing free online games! Cosmic Bingo, Castle Siege, Super Pong & more. Fun multiplayer games with stunning visuals.">
+    <meta property="og:image" content="https://cosmic-bingo.netlify.app/og-image.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://cosmic-bingo.netlify.app/">
+    <meta property="twitter:title" content="Galaxy Games - Play Free Online Games">
+    <meta property="twitter:description" content="Play amazing free online games! Cosmic Bingo, Castle Siege, Super Pong & more. Fun multiplayer games with stunning visuals.">
+    <meta property="twitter:image" content="https://cosmic-bingo.netlify.app/og-image.png">
+    
+    <!-- PWA & Mobile -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0f0c29">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='90'>🎮</text></svg>">
+    <link rel="manifest" href="/manifest.json">
     <style>
         * {
             margin: 0;
@@ -139,6 +169,12 @@
 
         .game-card:hover::before {
             opacity: 0.3;
+            animation: shimmer 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(200%) rotate(45deg); }
         }
 
         .game-thumbnail {
@@ -177,6 +213,18 @@
 
         .game-thumbnail.suggestions {
             background: linear-gradient(135deg, #7028e4 0%, #e5b2ca 100%);
+        }
+
+        .game-thumbnail.tetris {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .game-thumbnail.snake {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+
+        .game-thumbnail.minesweeper {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
 
         .game-title {
@@ -256,15 +304,139 @@
 
         @media (max-width: 768px) {
             h1 {
-                font-size: 3rem;
+                font-size: 2.5rem;
             }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
             .games-container {
                 grid-template-columns: 1fr;
+                padding: 20px 10px;
+                gap: 20px;
+            }
+            
+            .game-card {
+                padding: 15px;
+            }
+            
+            .game-thumbnail {
+                height: 150px;
+                font-size: 3rem;
+            }
+            
+            .game-title {
+                font-size: 1.5rem;
+            }
+            
+            .game-description {
+                font-size: 1rem;
+            }
+            
+            .badge {
+                font-size: 0.8rem;
+                padding: 4px 12px;
+            }
+            
+            .floating-emoji {
+                font-size: 2rem;
+            }
+            
+            #suggestionForm input {
+                font-size: 0.9rem !important;
+                padding: 8px !important;
+            }
+            
+            #suggestionForm button {
+                font-size: 0.9rem !important;
+                padding: 8px 16px !important;
+            }
+        }
+        /* Loading animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #00ffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Smooth transitions for game cards */
+        .game-card {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .game-card:nth-child(1) { animation-delay: 0.1s; }
+        .game-card:nth-child(2) { animation-delay: 0.2s; }
+        .game-card:nth-child(3) { animation-delay: 0.3s; }
+        .game-card:nth-child(4) { animation-delay: 0.4s; }
+        .game-card:nth-child(5) { animation-delay: 0.5s; }
+        .game-card:nth-child(6) { animation-delay: 0.6s; }
+        .game-card:nth-child(7) { animation-delay: 0.7s; }
+        .game-card:nth-child(8) { animation-delay: 0.8s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <h1 class="loader-title">GALAXY GAMES</h1>
+            <div class="loader-spinner"></div>
+        </div>
+    </div>
+    
     <div class="stars"></div>
     
     <!-- Floating decorations -->
@@ -346,6 +518,57 @@
             </div>
         </a>
 
+        <!-- Cosmic Tetris -->
+        <a href="games/cosmic-tetris/" class="game-card">
+            <div class="game-thumbnail tetris">
+                🧩
+            </div>
+            <h2 class="game-title">Cosmic Tetris</h2>
+            <p class="game-description">
+                The classic block-puzzle game with stunning space visuals! 
+                Features power-ups, multiple game modes, and cosmic effects.
+            </p>
+            <div class="game-badges">
+                <span class="badge new">NEW!</span>
+                <span class="badge">Power-ups</span>
+                <span class="badge">4 Modes</span>
+            </div>
+        </a>
+
+        <!-- Cosmic Snake -->
+        <a href="games/cosmic-snake/" class="game-card">
+            <div class="game-thumbnail snake">
+                🐍
+            </div>
+            <h2 class="game-title">Cosmic Snake</h2>
+            <p class="game-description">
+                Guide your glowing snake through space! Collect power-ups, 
+                avoid obstacles, and grow in this enhanced classic game.
+            </p>
+            <div class="game-badges">
+                <span class="badge new">NEW!</span>
+                <span class="badge">Power-ups</span>
+                <span class="badge">4 Modes</span>
+            </div>
+        </a>
+
+        <!-- Cosmic Minesweeper -->
+        <a href="games/cosmic-minesweeper/" class="game-card">
+            <div class="game-thumbnail minesweeper">
+                💣
+            </div>
+            <h2 class="game-title">Cosmic Minesweeper</h2>
+            <p class="game-description">
+                Classic minesweeper with cosmic flair! Features power-ups, 
+                achievements, and multiple difficulty levels.
+            </p>
+            <div class="game-badges">
+                <span class="badge new">NEW!</span>
+                <span class="badge">Power-ups</span>
+                <span class="badge">Achievements</span>
+            </div>
+        </a>
+
         <!-- Game Suggestions -->
         <div class="game-card" id="suggestionsCard">
             <div class="game-thumbnail suggestions">
@@ -417,30 +640,77 @@
         function handleSuggestion(event) {
             event.preventDefault();
             
-            const gameIdea = document.getElementById('gameIdea').value;
-            const form = document.getElementById('suggestionForm');
-            const thankYou = document.getElementById('suggestionThankYou');
+            try {
+                const gameIdea = document.getElementById('gameIdea').value.trim();
+                
+                if (!gameIdea) {
+                    alert('Please enter a game idea!');
+                    return;
+                }
+                
+                const form = document.getElementById('suggestionForm');
+                const thankYou = document.getElementById('suggestionThankYou');
+                
+                // Save to localStorage (in real app, send to server)
+                const suggestions = JSON.parse(localStorage.getItem('gameSuggestions') || '[]');
+                suggestions.push({
+                    idea: gameIdea,
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('gameSuggestions', JSON.stringify(suggestions));
+                
+                // Show thank you message
+                form.style.display = 'none';
+                thankYou.style.display = 'block';
+                
+                // Add celebration effect
+                createConfetti();
+                
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    form.style.display = 'block';
+                    thankYou.style.display = 'none';
+                    document.getElementById('gameIdea').value = '';
+                }, 3000);
+                
+                console.log('Game suggestions:', suggestions);
+            } catch (error) {
+                console.error('Error saving suggestion:', error);
+                alert('Oops! Something went wrong. Please try again.');
+            }
+        }
+        
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff88', '#ff6b6b'];
+            const confettiCount = 30;
             
-            // Save to localStorage (in real app, send to server)
-            const suggestions = JSON.parse(localStorage.getItem('gameSuggestions') || '[]');
-            suggestions.push({
-                idea: gameIdea,
-                timestamp: new Date().toISOString()
-            });
-            localStorage.setItem('gameSuggestions', JSON.stringify(suggestions));
-            
-            // Show thank you message
-            form.style.display = 'none';
-            thankYou.style.display = 'block';
-            
-            // Reset after 3 seconds
-            setTimeout(() => {
-                form.style.display = 'block';
-                thankYou.style.display = 'none';
-                document.getElementById('gameIdea').value = '';
-            }, 3000);
-            
-            console.log('Game suggestions:', suggestions);
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-10px';
+                confetti.style.opacity = '0.8';
+                confetti.style.pointerEvents = 'none';
+                confetti.style.zIndex = '9999';
+                confetti.style.borderRadius = '50%';
+                
+                document.body.appendChild(confetti);
+                
+                // Animate confetti
+                const animation = confetti.animate([
+                    { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                    { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+                ], {
+                    duration: 3000 + Math.random() * 2000,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                });
+                
+                animation.onfinish = () => confetti.remove();
+            }
         }
 
         // Initialize
@@ -449,6 +719,65 @@
         // Add hover effects
         document.querySelectorAll('.game-card').forEach(card => {
             card.addEventListener('mouseenter', playHoverSound);
+        });
+
+        // Hide loader when page is loaded
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 1000);
+        });
+
+        // Add page transition effect when clicking game cards
+        document.querySelectorAll('a.game-card').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const href = link.getAttribute('href');
+                
+                // Show loader
+                document.getElementById('loader').classList.remove('hidden');
+                
+                // Navigate after animation
+                setTimeout(() => {
+                    window.location.href = href;
+                }, 500);
+            });
+        });
+        
+        // Performance optimization: Intersection Observer for lazy loading animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '50px'
+        };
+        
+        const animationObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    animationObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        // Observe game cards for animation
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.style.animationPlayState = 'paused';
+            animationObserver.observe(card);
+        });
+        
+        // Prefetch game pages on hover for faster loading
+        let prefetchedUrls = new Set();
+        document.querySelectorAll('a.game-card').forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                const href = link.getAttribute('href');
+                if (!prefetchedUrls.has(href)) {
+                    const prefetch = document.createElement('link');
+                    prefetch.rel = 'prefetch';
+                    prefetch.href = href;
+                    document.head.appendChild(prefetch);
+                    prefetchedUrls.add(href);
+                }
+            });
         });
     </script>
 </body>

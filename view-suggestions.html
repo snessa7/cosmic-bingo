@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Suggestions Viewer - Galaxy Games Admin</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: white;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #00ff88;
+            text-align: center;
+        }
+        .suggestion {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #00ff88;
+        }
+        .timestamp {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .no-suggestions {
+            text-align: center;
+            color: #888;
+            padding: 40px;
+        }
+        button {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #ff6666;
+        }
+        .export-btn {
+            background: #00ff88;
+            color: #0a0a0a;
+        }
+        .export-btn:hover {
+            background: #00cc66;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 Game Suggestions Admin</h1>
+    
+    <div style="text-align: center; margin: 20px 0;">
+        <button class="export-btn" onclick="exportSuggestions()">📥 Export as JSON</button>
+        <button onclick="clearSuggestions()">🗑️ Clear All</button>
+        <button onclick="loadSuggestions()">🔄 Refresh</button>
+    </div>
+    
+    <div id="suggestions"></div>
+    
+    <script>
+        function loadSuggestions() {
+            const container = document.getElementById('suggestions');
+            const suggestions = JSON.parse(localStorage.getItem('gameSuggestions') || '[]');
+            
+            if (suggestions.length === 0) {
+                container.innerHTML = '<div class="no-suggestions">No game suggestions yet! Visit the main site to submit one.</div>';
+                return;
+            }
+            
+            container.innerHTML = '<h2>Total Suggestions: ' + suggestions.length + '</h2>';
+            
+            suggestions.reverse().forEach((suggestion, index) => {
+                const date = new Date(suggestion.timestamp).toLocaleString();
+                container.innerHTML += `
+                    <div class="suggestion">
+                        <strong>Idea #${suggestions.length - index}:</strong> ${suggestion.idea}
+                        <div class="timestamp">Submitted: ${date}</div>
+                    </div>
+                `;
+            });
+        }
+        
+        function clearSuggestions() {
+            if (confirm('Are you sure you want to clear all suggestions?')) {
+                localStorage.removeItem('gameSuggestions');
+                loadSuggestions();
+            }
+        }
+        
+        function exportSuggestions() {
+            const suggestions = localStorage.getItem('gameSuggestions') || '[]';
+            const blob = new Blob([suggestions], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'game-suggestions-' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Load on page load
+        loadSuggestions();
+        
+        // Note for deployment
+        console.log(`
+NOTE: This viewer only shows suggestions stored in YOUR browser's localStorage.
+To collect suggestions from all users, you'd need to:
+1. Set up a backend API (Firebase, Supabase, etc.)
+2. Modify the suggestion form to send data to the API
+3. Update this viewer to fetch from the API
+
+For now, this works great for testing!
+        `);
+    </script>
+</body>
+</html>
