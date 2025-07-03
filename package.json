@@ -1,12 +1,12 @@
 {
-  "name": "cosmic-bingo",
-  "version": "1.0.0",
-  "description": "A super cool multiplayer bingo game with modern features",
+  "name": "cosmic-chess-tutor",
+  "version": "2.0.0",
+  "description": "A modern interactive chess learning platform with AI guidance, tactical puzzles, and comprehensive tutorials",
   "scripts": {
     "start": "python3 -m http.server 8000",
     "build": "echo 'No build required for static site'"
   },
-  "keywords": ["bingo", "game", "multiplayer", "cosmic"],
+  "keywords": ["chess", "tutor", "AI", "learn", "tactics", "puzzles", "openings", "endgames", "interactive", "cosmic"],
   "author": "Seth Paonessa",
   "license": "MIT"
 }

@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galaxy Games - Play Free Online Games</title>
+    <title>Cosmic Chess Tutor - Learn Chess with AI</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Play amazing free online games at Galaxy Games! Enjoy Cosmic Bingo, Castle Siege, Super Pong, and more. Fun multiplayer games with stunning visuals and power-ups.">
-    <meta name="keywords" content="free online games, multiplayer games, browser games, cosmic bingo, castle siege, super pong, cosmic bowling, tetris, snake game, minesweeper">
-    <meta name="author" content="Galaxy Games">
+    <meta name="description" content="Master chess with our interactive Cosmic Chess Tutor! Learn with AI opponents, tackle tactical puzzles, and improve your game with guided lessons and tutorials.">
+    <meta name="keywords" content="chess tutor, learn chess, chess AI, chess lessons, chess tactics, chess puzzles, chess openings, chess endgames, online chess">
+    <meta name="author" content="Cosmic Chess Tutor">
     <meta name="robots" content="index, follow">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://cosmic-bingo.netlify.app/">
-    <meta property="og:title" content="Galaxy Games - Play Free Online Games">
-    <meta property="og:description" content="Play amazing free online games! Cosmic Bingo, Castle Siege, Super Pong & more. Fun multiplayer games with stunning visuals.">
+    <meta property="og:title" content="Cosmic Chess Tutor - Learn Chess with AI">
+    <meta property="og:description" content="Master chess with interactive lessons, AI opponents, and tactical puzzles! Learn openings, tactics, and endgames with guided tutorials.">
     <meta property="og:image" content="https://cosmic-bingo.netlify.app/og-image.png">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://cosmic-bingo.netlify.app/">
-    <meta property="twitter:title" content="Galaxy Games - Play Free Online Games">
-    <meta property="twitter:description" content="Play amazing free online games! Cosmic Bingo, Castle Siege, Super Pong & more. Fun multiplayer games with stunning visuals.">
+    <meta property="twitter:title" content="Cosmic Chess Tutor - Learn Chess with AI">
+    <meta property="twitter:description" content="Master chess with interactive lessons, AI opponents, and tactical puzzles! Learn openings, tactics, and endgames with guided tutorials.">
     <meta property="twitter:image" content="https://cosmic-bingo.netlify.app/og-image.png">
     
     <!-- PWA & Mobile -->
@@ -215,16 +215,28 @@
             background: linear-gradient(135deg, #7028e4 0%, #e5b2ca 100%);
         }
 
-        .game-thumbnail.tetris {
+        .game-thumbnail.chess {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
-        .game-thumbnail.snake {
+        .game-thumbnail.practice {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .game-thumbnail.tutorial {
             background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
         }
 
-        .game-thumbnail.minesweeper {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        .game-thumbnail.puzzles {
+            background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%);
+        }
+
+        .game-thumbnail.openings {
+            background: linear-gradient(135deg, #00d2ff 0%, #3a47d5 100%);
+        }
+
+        .game-thumbnail.endgame {
+            background: linear-gradient(135deg, #505285 0%, #585989 100%);
         }
 
         .game-title {
@@ -446,130 +458,131 @@
     <div class="floating-emoji" style="bottom: 10%; right: 10%; animation-delay: 6s;">🎯</div>
 
     <header class="header">
-        <h1>GALAXY GAMES</h1>
-        <p class="tagline">Play Amazing Games with Friends!</p>
-        <div style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); color: white; padding: 15px 30px; border-radius: 10px; margin: 20px auto 0; display: inline-block; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 20px rgba(255, 107, 107, 0.4); animation: pulse 2s ease-in-out infinite;">
-            🚧 UNDER CONSTRUCTION - New Games Coming Soon! 🚧
+        <h1>COSMIC CHESS TUTOR</h1>
+        <p class="tagline">Master Chess with AI Guidance!</p>
+        <div style="background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%); color: white; padding: 15px 30px; border-radius: 10px; margin: 20px auto 0; display: inline-block; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 20px rgba(0, 255, 255, 0.4); animation: pulse 2s ease-in-out infinite;">
+            ♟️ NEW: Interactive Chess Learning Platform!
         </div>
     </header>
 
     <main class="games-container">
-        <!-- Cosmic Bingo -->
-        <a href="games/cosmic-bingo/" class="game-card">
-            <div class="game-thumbnail bingo">
-                🎱
+        <!-- Chess Tutor - Main Game -->
+        <a href="games/chess-tutor/" class="game-card">
+            <div class="game-thumbnail chess">
+                ♟️
             </div>
-            <h2 class="game-title">Cosmic Bingo</h2>
+            <h2 class="game-title">Chess Tutor</h2>
             <p class="game-description">
-                Classic bingo with a cosmic twist! Play with up to 4 friends, use power-ups, 
-                and experience amazing visual effects.
-            </p>
-            <div class="game-badges">
-                <span class="badge multiplayer">Multiplayer</span>
-                <span class="badge">Power-ups</span>
-                <span class="badge">5 Themes</span>
-            </div>
-        </a>
-
-        <!-- Castle Siege -->
-        <a href="games/castle-siege/" class="game-card">
-            <div class="game-thumbnail castle">
-                🏰
-            </div>
-            <h2 class="game-title">Castle Siege</h2>
-            <p class="game-description">
-                Destroy your opponent's castle in this turn-based battle game! 
-                Play against friends or AI in epic physics-based combat.
-            </p>
-            <div class="game-badges">
-                <span class="badge pvp">PvP</span>
-                <span class="badge">Physics</span>
-            </div>
-        </a>
-
-        <!-- Super Pong -->
-        <a href="games/super-pong/" class="game-card">
-            <div class="game-thumbnail pong">
-                🏓
-            </div>
-            <h2 class="game-title">Super Pong</h2>
-            <p class="game-description">
-                Classic Pong reimagined with power-ups, AI difficulties, and amazing effects! 
-                Speed boosts, multi-ball madness, and more!
+                Master chess with interactive lessons, AI opponents, and tactical puzzles! 
+                Learn openings, tactics, and endgames with guided tutorials.
             </p>
             <div class="game-badges">
                 <span class="badge new">NEW!</span>
-                <span class="badge">Power-ups</span>
-                <span class="badge">3 Difficulties</span>
+                <span class="badge">AI Tutor</span>
+                <span class="badge">Lessons</span>
+                <span class="badge">Puzzles</span>
             </div>
         </a>
 
+        <!-- Practice Mode -->
+        <a href="games/chess-tutor/#practice" class="game-card">
+            <div class="game-thumbnail practice">
+                🎯
+            </div>
+            <h2 class="game-title">Practice Mode</h2>
+            <p class="game-description">
+                Play against AI opponents with adjustable difficulty levels. 
+                Perfect your skills with hints and move analysis.
+            </p>
+            <div class="game-badges">
+                <span class="badge">AI Opponent</span>
+                <span class="badge">5 Difficulties</span>
+                <span class="badge">Hints</span>
+            </div>
+        </a>
 
-        <!-- Cosmic Tetris -->
-        <a href="games/cosmic-tetris/" class="game-card">
-            <div class="game-thumbnail tetris">
+        <!-- Tutorial Lessons -->
+        <a href="games/chess-tutor/#tutorial" class="game-card">
+            <div class="game-thumbnail tutorial">
+                📚
+            </div>
+            <h2 class="game-title">Interactive Lessons</h2>
+            <p class="game-description">
+                Learn chess fundamentals with step-by-step tutorials. 
+                Master piece movement, tactics, and strategic principles.
+            </p>
+            <div class="game-badges">
+                <span class="badge">Beginner</span>
+                <span class="badge">Intermediate</span>
+                <span class="badge">Advanced</span>
+            </div>
+        </a>
+
+        <!-- Tactical Puzzles -->
+        <a href="games/chess-tutor/#puzzles" class="game-card">
+            <div class="game-thumbnail puzzles">
                 🧩
             </div>
-            <h2 class="game-title">Cosmic Tetris</h2>
+            <h2 class="game-title">Tactical Puzzles</h2>
             <p class="game-description">
-                The classic block-puzzle game with stunning space visuals! 
-                Features power-ups, multiple game modes, and cosmic effects.
+                Solve chess puzzles to improve your tactical vision! 
+                Practice pins, forks, skewers, and checkmate patterns.
             </p>
             <div class="game-badges">
-                <span class="badge new">NEW!</span>
-                <span class="badge">Power-ups</span>
-                <span class="badge">4 Modes</span>
+                <span class="badge">100+ Puzzles</span>
+                <span class="badge">Rated</span>
+                <span class="badge">Timed</span>
             </div>
         </a>
 
-        <!-- Cosmic Snake -->
-        <a href="games/cosmic-snake/" class="game-card">
-            <div class="game-thumbnail snake">
-                🐍
+        <!-- Opening Explorer -->
+        <a href="games/chess-tutor/#openings" class="game-card">
+            <div class="game-thumbnail openings">
+                🚀
             </div>
-            <h2 class="game-title">Cosmic Snake</h2>
+            <h2 class="game-title">Opening Explorer</h2>
             <p class="game-description">
-                Guide your glowing snake through space! Collect power-ups, 
-                avoid obstacles, and grow in this enhanced classic game.
+                Explore chess openings with interactive theory and practice. 
+                Learn popular openings like the Italian Game and Queen's Gambit.
             </p>
             <div class="game-badges">
-                <span class="badge new">NEW!</span>
-                <span class="badge">Power-ups</span>
-                <span class="badge">4 Modes</span>
+                <span class="badge">Theory</span>
+                <span class="badge">Practice</span>
+                <span class="badge">Database</span>
             </div>
         </a>
 
-        <!-- Cosmic Minesweeper -->
-        <a href="games/cosmic-minesweeper/" class="game-card">
-            <div class="game-thumbnail minesweeper">
-                💣
+        <!-- Endgame Trainer -->
+        <a href="games/chess-tutor/#endgame" class="game-card">
+            <div class="game-thumbnail endgame">
+                👑
             </div>
-            <h2 class="game-title">Cosmic Minesweeper</h2>
+            <h2 class="game-title">Endgame Trainer</h2>
             <p class="game-description">
-                Classic minesweeper with cosmic flair! Features power-ups, 
-                achievements, and multiple difficulty levels.
+                Master essential endgames with guided practice sessions. 
+                Learn key patterns for king and pawn, rook, and queen endings.
             </p>
             <div class="game-badges">
-                <span class="badge new">NEW!</span>
-                <span class="badge">Power-ups</span>
-                <span class="badge">Achievements</span>
+                <span class="badge">Essential</span>
+                <span class="badge">Advanced</span>
+                <span class="badge">Practical</span>
             </div>
         </a>
 
-        <!-- Game Suggestions -->
+        <!-- Chess Feedback -->
         <div class="game-card" id="suggestionsCard">
             <div class="game-thumbnail suggestions">
                 💡
             </div>
-            <h2 class="game-title">Suggest a Game!</h2>
+            <h2 class="game-title">Suggest Features!</h2>
             <p class="game-description">
-                Have an idea for the next awesome game? We'd love to hear it! 
-                Share your creative game ideas with us.
+                Have ideas for new chess features or lessons? We'd love to hear them! 
+                Help us improve the chess learning experience.
             </p>
             <form id="suggestionForm" style="margin-top: 20px;" onsubmit="handleSuggestion(event)">
                 <input type="text" 
                        id="gameIdea" 
-                       placeholder="Enter your game idea..." 
+                       placeholder="Enter your chess feature idea..." 
                        style="width: 100%; 
                               padding: 10px; 
                               border-radius: 10px; 
@@ -601,7 +614,7 @@
     </main>
 
     <footer class="footer">
-        <p>Galaxy Games © 2025 | Made with ❤️ and cosmic energy</p>
+        <p>Cosmic Chess Tutor © 2025 | Master chess with AI guidance ♟️</p>
     </footer>
 
     <script>
